@@ -46,7 +46,7 @@ public class DataParserAgent {
             case "내일" -> LocalDate.now().plusDays(1).format(API_DATE_FORMAT);
             case "모레" -> LocalDate.now().plusDays(2).format(API_DATE_FORMAT);
 
-            default -> parseSpecificDate(dateInput); // 구체적인 날자가 주어진경우
+            default -> parseSpecificDate(normalizedDate); // 구체적인 날자가 주어진경우
         };
 
     }
@@ -58,7 +58,7 @@ public class DataParserAgent {
         } catch (DateTimeParseException e) {
             log.error("잘못된 날짜형식입니다 : {}", dateInput);
 
-            throw new IllegalArgumentException("날짜 형식이 올바르지 않습니다//");
+            throw new IllegalArgumentException("날짜 형식이 올바르지 않습니다");
         }
     }
 }
