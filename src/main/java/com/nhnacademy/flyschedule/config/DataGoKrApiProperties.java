@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "data-go-kr.api")
 public class DataGoKrApiProperties {
-
     private String url;
     private String serviceKey;
 }
