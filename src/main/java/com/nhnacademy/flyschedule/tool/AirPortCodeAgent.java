@@ -21,14 +21,13 @@ public class AirPortCodeAgent {
 
     @PostConstruct
     public void init() {
-        List<AirportInfoResponse> airportInfoList =
-                tagoApiService.getAirportInfoList();
+        List<AirportInfoResponse> airportInfoList = tagoApiService.getAirportInfoList();
+        airportInfoList
+                .forEach(airportInfo -> {
+                    airportMap.put(airportInfo.airportName(), airportInfo.airportId());
+                });
 
-        Object first = airportInfoList.getFirst();
-
-        log.info("class={}", first.getClass());
-
-        log.info("공항 정보 {} 건 로딩 완료", airportMap.size());
+        log.info("공항정보 로딩완료  {}건", airportInfoList.size());
     }
 
     /**
@@ -48,7 +47,7 @@ public class AirPortCodeAgent {
             throw new IllegalArgumentException("공항 이름을 입력해주세요.");
         }
 
-        String normalized = airportName.trim();
+        String normalized = normalizeAirportName(airportName);
 
         // 공학코드 입력한경우 그대로 리턴
         if (airportMap.containsValue(normalized)) {
@@ -77,4 +76,10 @@ public class AirPortCodeAgent {
 
     }
 
+    private String normalizeAirportName(String airportName) {
+        return airportName
+                .replace("국제공항", "")
+                .replace("공항", "")
+                .trim();
+    }
 }
