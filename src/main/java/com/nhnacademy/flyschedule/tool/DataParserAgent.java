@@ -46,7 +46,7 @@ public class DataParserAgent {
             case "내일" -> LocalDate.now().plusDays(1).format(API_DATE_FORMAT);
             case "모레" -> LocalDate.now().plusDays(2).format(API_DATE_FORMAT);
 
-            default -> parseSpecificDate(dateInput); // 구체적인 날자가 주어진경우
+            default -> parseSpecificDate(normalizedDate); // 구체적인 날자가 주어진경우
         };
 
     }

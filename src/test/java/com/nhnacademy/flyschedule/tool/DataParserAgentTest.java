@@ -2,8 +2,7 @@ package com.nhnacademy.flyschedule.tool;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -11,12 +10,10 @@ import java.time.format.DateTimeFormatter;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
-@SpringBootTest
 class DataParserAgentTest {
     private static final DateTimeFormatter API_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
 
-    @Autowired
-    private DataParserAgent dataParserAgent;
+    private final DataParserAgent dataParserAgent = new DataParserAgent();
 
     @Test
     void parse() {
