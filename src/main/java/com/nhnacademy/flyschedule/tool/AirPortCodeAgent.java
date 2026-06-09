@@ -23,9 +23,9 @@ public class AirPortCodeAgent {
     public void init() {
         List<AirportInfoResponse> airportInfoList = tagoApiService.getAirportInfoList();
         airportInfoList
-                .forEach(airportInfo -> {
-                    airportMap.put(airportInfo.airportName(), airportInfo.airportId());
-                });
+                .forEach(airportInfo ->
+                        airportMap.put(airportInfo.airportName(), airportInfo.airportId())
+                );
 
         log.info("공항정보 로딩완료  {}건", airportInfoList.size());
     }

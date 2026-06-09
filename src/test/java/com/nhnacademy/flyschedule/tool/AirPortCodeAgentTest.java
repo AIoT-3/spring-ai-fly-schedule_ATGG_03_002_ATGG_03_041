@@ -5,7 +5,8 @@ import com.nhnacademy.flyschedule.service.TagoApiService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -24,49 +25,39 @@ class AirPortCodeAgentTest {
 
     @BeforeEach
     void setUp() {
-
         when(tagoApiService.getAirportInfoList())
                 .thenReturn(List.of(
                         new AirportInfoResponse("광주", "NAARKJJ"),
-                        new AirportInfoResponse("인천국제공항", "RKSI"),
-                        new AirportInfoResponse("김포국제공항", "RKSS")
+                        new AirportInfoResponse("인천", "NAARKSI"),
+                        new AirportInfoResponse("김포", "NAARKSS")
                 ));
 
         airPortCodeAgent = new AirPortCodeAgent(tagoApiService);
-
-        // @PostConstruct 수동 호출
         airPortCodeAgent.init();
     }
 
-    @Test
-    void getAirportCodeTest() {
-        String airportCode = airPortCodeAgent.getAirportCode("광주 공항");
-
-        assertNotNull(airportCode);
-        assertEquals("NAARKJJ", airportCode);
-    }
-
-    @Test
-    void getAirportCodeGivenCode() {
-        String airportCode = airPortCodeAgent.getAirportCode("NAARKJJ");
-
-        assertNotNull(airportCode);
-        assertEquals("NAARKJJ", airportCode);
+    @ParameterizedTest
+    @CsvSource({
+            "광주 공항, NAARKJJ",
+            "광주, NAARKJJ",
+            "NAARKJJ, NAARKJJ"
+    })
+    void getAirportCodeTest(String input, String expected) {
+        assertEquals(expected,
+                airPortCodeAgent.getAirportCode(input));
     }
 
     @Test
     void invalidAirportCodeTest() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> airPortCodeAgent.getAirportCode("")
+        assertAll(
+                () -> assertThrows(
+                        IllegalArgumentException.class,
+                        () -> airPortCodeAgent.getAirportCode("")
+                ),
+                () -> assertThrows(
+                        IllegalArgumentException.class,
+                        () -> airPortCodeAgent.getAirportCode("*******")
+                )
         );
-    }
-
-    @Test
-    void getAirportNameTest2() {
-        String airportCode = airPortCodeAgent.getAirportCode("광주");
-
-        assertNotNull(airportCode);
-        assertEquals("NAARKJJ", airportCode);
     }
 }
