@@ -31,21 +31,24 @@ public class TagoApiService {
     public List<FlightInfoResponse> getFlightInfoList(FlightInfoRequest request) {
         return requestApi(
                 "/GetFlightOpratInfoList",
-                request.toQueryParams(apiProperties.getServiceKey())
+                request.toQueryParams(apiProperties.getServiceKey()),
+                new ParameterizedTypeReference<TagoApiResponseWrapper<FlightInfoResponse>>() {}
         );
     }
 
     public List<AirportInfoResponse> getAirportInfoList() {
         return requestApi(
                 "/GetArprtList",
-                defaultQueryParams()
+                defaultQueryParams(),
+                new ParameterizedTypeReference<TagoApiResponseWrapper<AirportInfoResponse>>() {}
         );
     }
 
     public List<AirlineInfoResponse> getAirlineInfoList() {
         return requestApi(
                 "/GetAirmanList",
-                defaultQueryParams()
+                defaultQueryParams(),
+                new ParameterizedTypeReference<TagoApiResponseWrapper<AirlineInfoResponse>>() {}
         );
     }
 
@@ -53,7 +56,8 @@ public class TagoApiService {
 
     private <T> List<T> requestApi(
             String endpoint,
-            MultiValueMap<String, String> queryParams
+            MultiValueMap<String, String> queryParams,
+            ParameterizedTypeReference<TagoApiResponseWrapper<T>> responseType
     ) {
         try {
             URI uri = buildUri(endpoint, queryParams);
@@ -63,7 +67,7 @@ public class TagoApiService {
             TagoApiResponseWrapper<T> response = restClient.get()
                     .uri(uri)
                     .retrieve()
-                    .body(new ParameterizedTypeReference<>() {});
+                    .body(responseType);
 
             return extractItems(response);
         } catch (Exception e) {
