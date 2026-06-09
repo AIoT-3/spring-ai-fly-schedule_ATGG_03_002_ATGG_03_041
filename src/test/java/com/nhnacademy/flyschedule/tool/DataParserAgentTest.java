@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class DataParserAgentTest {
     private static final DateTimeFormatter API_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
-    private static final DateTimeFormatter INPUT_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Autowired
     private DataParserAgent dataParserAgent;
