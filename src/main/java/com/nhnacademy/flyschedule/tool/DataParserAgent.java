@@ -58,7 +58,7 @@ public class DataParserAgent {
         } catch (DateTimeParseException e) {
             log.error("잘못된 날짜형식입니다 : {}", dateInput);
 
-            throw new IllegalArgumentException("날짜 형식이 올바르지 않습니다//");
+            throw new IllegalArgumentException("날짜 형식이 올바르지 않습니다");
         }
     }
 }
