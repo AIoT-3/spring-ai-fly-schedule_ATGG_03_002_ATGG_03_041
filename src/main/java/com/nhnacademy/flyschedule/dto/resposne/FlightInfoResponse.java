@@ -10,10 +10,10 @@ public record FlightInfoResponse (
         String airlineName,         // 항공사명 (예: 아시아나항공)
 
         @JsonProperty("depPlandTime")
-        String departureTime,       // 출발시간(YYYYMMDD)
+        String departureTime,       // 출발시간(YYYYMMDDHHMI)
 
         @JsonProperty("arrPlandTime")
-        String arrivalTime,         // 도착시간(YYYYMMDD)
+        String arrivalTime,         // 도착시간(YYYYMMDDHHMI)
 
         @JsonProperty("economyCharge")
         Integer economyCharge,       // 일반석운임(단위 : 원)
