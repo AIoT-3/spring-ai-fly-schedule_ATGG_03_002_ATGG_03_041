@@ -23,6 +23,8 @@ public class AirlineInfoTool {
     public String getAirlineId(
             @ToolParam(description = "항공사 한글 이름. 예: 대한항공, 제주항공, 진에어") String airlineName
     ) {
+        log.info("MCP Tool 호출: airlineId(airlineName={})", airlineName);
+
         return airlineCodeAgent.getAirlineCode(airlineName);
     }
 }
