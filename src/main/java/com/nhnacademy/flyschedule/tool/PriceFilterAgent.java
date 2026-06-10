@@ -31,18 +31,10 @@ public class PriceFilterAgent {
             return List.of();
         }
 
-        return flights.stream().filter(
-                flight -> {
-                    Integer price = flight.economyCharge();
-                    // 가격 정보가 없는 경우 제외
-                    if(price == null || price == 0) {
-                        return false;
-                    }
-
-                    // 최소, 최대 가격 필터
-                    return (minPrice == null || price >= minPrice) &&
-                            (maxPrice == null || price <= maxPrice);
-                }).toList();
+        return flights.stream()
+                .filter(flight ->
+                        isInRange(flight.economyCharge(), minPrice, maxPrice))
+                .toList();
     }
 
     /**
@@ -55,7 +47,7 @@ public class PriceFilterAgent {
      */
     public FlightInfoResponse findCheapestPrice(List<FlightInfoResponse> flights) {
         return flights.stream()
-                .filter(f -> f.economyCharge() != null && f.economyCharge() > 0)
+                .filter(f -> isValidPrice(f.economyCharge()))
                 .min(Comparator.comparing(FlightInfoResponse::economyCharge))
                 .orElse(null);
     }
@@ -70,7 +62,7 @@ public class PriceFilterAgent {
      */
     public FlightInfoResponse findMostExpensivePrice(List<FlightInfoResponse> flights) {
         return flights.stream()
-                .filter(f -> f.economyCharge() != null && f.economyCharge() > 0)
+                .filter(f -> isValidPrice(f.economyCharge()))
                 .max(Comparator.comparing(FlightInfoResponse::economyCharge))
                 .orElse(null);
     }
@@ -85,9 +77,21 @@ public class PriceFilterAgent {
      */
     public double calculateAveragePrice(List<FlightInfoResponse> flights) {
         return flights.stream()
-                .filter(f -> f.economyCharge() != null && f.economyCharge() > 0)
+                .filter(f -> isValidPrice(f.economyCharge()))
                 .mapToInt(FlightInfoResponse::economyCharge)
                 .average()
                 .orElse(0.0);
+    }
+
+     // ===== Private Methods =====
+
+    private boolean isValidPrice(Integer price) {
+        return price != null && price > 0;
+    }
+
+    private boolean isInRange(Integer price, Integer minPrice, Integer maxPrice) {
+        return isValidPrice(price)
+                && (minPrice == null || price >= minPrice)
+                && (maxPrice == null || price <= maxPrice);
     }
 }
