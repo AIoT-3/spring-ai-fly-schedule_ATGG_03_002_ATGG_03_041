@@ -4,6 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.flyschedule.dto.request.FlightInfoRequest;
 import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
 import com.nhnacademy.flyschedule.service.TagoApiService;
+import com.nhnacademy.flyschedule.service.agent.AirPortCodeAgent;
+import com.nhnacademy.flyschedule.service.agent.DataParserAgent;
+import com.nhnacademy.flyschedule.service.agent.FlightGroupingAgent;
+import com.nhnacademy.flyschedule.service.agent.TimeFilterAgent;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 @Slf4j
 @SpringBootTest

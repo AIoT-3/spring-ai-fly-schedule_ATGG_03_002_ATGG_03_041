@@ -1,5 +1,6 @@
 package com.nhnacademy.flyschedule.tool;
 
+import com.nhnacademy.flyschedule.service.agent.DataParserAgent;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 

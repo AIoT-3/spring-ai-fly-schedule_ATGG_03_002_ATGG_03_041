@@ -1,6 +1,7 @@
 package com.nhnacademy.flyschedule.tool;
 
 import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
+import com.nhnacademy.flyschedule.service.agent.FlightGroupingAgent;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

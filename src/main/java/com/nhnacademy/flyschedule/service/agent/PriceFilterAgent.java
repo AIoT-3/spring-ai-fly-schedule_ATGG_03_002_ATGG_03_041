@@ -1,4 +1,4 @@
-package com.nhnacademy.flyschedule.tool;
+package com.nhnacademy.flyschedule.service.agent;
 
 import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
 import lombok.extern.slf4j.Slf4j;
