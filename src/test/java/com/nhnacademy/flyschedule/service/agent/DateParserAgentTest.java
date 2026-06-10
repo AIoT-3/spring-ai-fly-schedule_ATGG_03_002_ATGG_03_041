@@ -10,14 +10,14 @@ import java.time.format.DateTimeFormatter;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
-class DataParserAgentTest {
+class DateParserAgentTest {
     private static final DateTimeFormatter API_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
 
-    private final DataParserAgent dataParserAgent = new DataParserAgent();
+    private final DateParserAgent dateParserAgent = new DateParserAgent();
 
     @Test
     void parse() {
-        String date = dataParserAgent.parseDate("내일");
+        String date = dateParserAgent.parseDate("내일");
         assertNotNull(date);
         assertEquals(LocalDate.now().plusDays(1).format(API_DATE_FORMAT), date);
 
@@ -25,14 +25,14 @@ class DataParserAgentTest {
 
     @Test
     void parseInput() {
-        String date = dataParserAgent.parseDate("2026-10-20");
+        String date = dateParserAgent.parseDate("2026-10-20");
         assertNotNull(date);
         assertEquals("20261020", date);
     }
 
     @Test
     void parseNull() {
-        String date = dataParserAgent.parseDate(null);
+        String date = dateParserAgent.parseDate(null);
         assertNotNull(date);
         assertEquals(LocalDate.now().format(API_DATE_FORMAT), date);
 
@@ -41,7 +41,7 @@ class DataParserAgentTest {
     @Test
     void InvalidInput() {
         assertThrows(IllegalArgumentException.class, () -> {
-            dataParserAgent.parseDate("2026년 11월 20일");
+            dateParserAgent.parseDate("2026년 11월 20일");
         });
     }
 }

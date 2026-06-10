@@ -21,10 +21,10 @@ class AgentIntegrationTest {
     private TagoApiService service;
 
     @Autowired
-    private DataParserAgent dataParserAgent;
+    private DateParserAgent dateParserAgent;
 
     @Autowired
-    private AirPortCodeAgent airPortCodeAgent;
+    private AirportCodeAgent airPortCodeAgent;
 
     @Autowired
     private TimeFilterAgent timeFilterAgent;
@@ -41,7 +41,7 @@ class AgentIntegrationTest {
     @Test
     void agentIntegrationTest() throws Exception {
 
-        String parseDate = dataParserAgent.parseDate("내일");
+        String parseDate = dateParserAgent.parseDate("내일");
         String depAirportId = airPortCodeAgent.getAirportCode("광주공항");
         String arrAirportId = airPortCodeAgent.getAirportCode("제주국제공항");
 

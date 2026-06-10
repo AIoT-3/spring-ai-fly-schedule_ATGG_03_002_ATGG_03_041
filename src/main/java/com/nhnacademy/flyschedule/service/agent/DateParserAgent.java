@@ -9,7 +9,7 @@ import java.time.format.DateTimeParseException;
 
 @Slf4j
 @Service
-public class DataParserAgent {
+public class DateParserAgent {
     private static final DateTimeFormatter API_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
     private static final DateTimeFormatter INPUT_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
