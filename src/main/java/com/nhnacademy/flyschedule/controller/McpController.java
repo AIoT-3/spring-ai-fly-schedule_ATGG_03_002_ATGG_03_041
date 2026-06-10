@@ -1,12 +1,15 @@
 package com.nhnacademy.flyschedule.controller;
 
+import com.nhnacademy.flyschedule.dto.resposne.AirlineInfoResponse;
 import com.nhnacademy.flyschedule.dto.resposne.AirportInfoResponse;
+import com.nhnacademy.flyschedule.mcp.AirlineInfoTool;
 import com.nhnacademy.flyschedule.mcp.AirportInfoTool;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -16,6 +19,7 @@ import java.util.List;
 @RequestMapping("/api/mcp")
 public class McpController {
     private final AirportInfoTool airportInfoTool;
+    private final AirlineInfoTool airlineInfoTool;
 
     @GetMapping("/airports")
     public ResponseEntity<List<AirportInfoResponse>> getAirports() {
@@ -23,4 +27,26 @@ public class McpController {
                 .status(HttpStatus.OK)
                 .body(airportInfoTool.getAirportInfo());
     }
+
+    @GetMapping("/airports/code")
+    public ResponseEntity<AirportInfoResponse> getAirportInfo(@RequestParam String airportName) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new AirportInfoResponse(airportName, airportInfoTool.getAirportCode(airportName)));
+    }
+
+    @GetMapping("/airlines")
+    public ResponseEntity<List<AirlineInfoResponse>> getAirlines() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(airlineInfoTool.getAirlineInfo());
+    }
+
+    @GetMapping("/airlines/id")
+    public ResponseEntity<AirlineInfoResponse> getAirline(@RequestParam String airlineName) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new AirlineInfoResponse(airlineName, airlineInfoTool.getAirlineId(airlineName)));
+    }
+
 }

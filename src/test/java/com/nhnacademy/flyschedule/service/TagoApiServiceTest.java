@@ -7,7 +7,6 @@ import com.nhnacademy.flyschedule.dto.resposne.AirlineInfoResponse;
 import com.nhnacademy.flyschedule.dto.resposne.AirportInfoResponse;
 import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
