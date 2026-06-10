@@ -1,7 +1,7 @@
 package com.nhnacademy.flyschedule.controller;
 
 import com.nhnacademy.flyschedule.dto.resposne.AirportInfoResponse;
-import com.nhnacademy.flyschedule.tool.AirportInfoTool;
+import com.nhnacademy.flyschedule.mcp.AirportInfoTool;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

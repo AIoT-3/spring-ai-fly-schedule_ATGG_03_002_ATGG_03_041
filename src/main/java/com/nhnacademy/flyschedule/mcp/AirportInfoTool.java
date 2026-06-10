@@ -1,4 +1,4 @@
-package com.nhnacademy.flyschedule.tool;
+package com.nhnacademy.flyschedule.mcp;
 
 import com.nhnacademy.flyschedule.dto.resposne.AirportInfoResponse;
 import com.nhnacademy.flyschedule.service.agent.AirportCodeAgent;
