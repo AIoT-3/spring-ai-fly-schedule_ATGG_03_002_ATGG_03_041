@@ -1,7 +1,6 @@
-package com.nhnacademy.flyschedule.tool;
+package com.nhnacademy.flyschedule.service.agent;
 
 import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
-import com.nhnacademy.flyschedule.service.agent.TimeFilterAgent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

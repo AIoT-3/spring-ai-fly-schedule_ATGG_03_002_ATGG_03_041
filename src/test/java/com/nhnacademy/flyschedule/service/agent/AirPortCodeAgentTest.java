@@ -1,8 +1,7 @@
-package com.nhnacademy.flyschedule.tool;
+package com.nhnacademy.flyschedule.service.agent;
 
 import com.nhnacademy.flyschedule.dto.resposne.AirportInfoResponse;
 import com.nhnacademy.flyschedule.service.TagoApiService;
-import com.nhnacademy.flyschedule.service.agent.AirPortCodeAgent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
