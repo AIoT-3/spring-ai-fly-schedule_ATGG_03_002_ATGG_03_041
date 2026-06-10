@@ -16,10 +16,7 @@ public class ChatClientConfig {
     @Primary
     @Bean
     public ChatClient.Builder ollamaChatClientBuilder(
-            @Qualifier("ollamaChatModel") ChatModel ollamaChatModel,
-            AirportInfoTool airportInfoTool,
-            AirlineInfoTool airlineInfoTool,
-            FlightSearchTool flightSearchTool
+            @Qualifier("ollamaChatModel") ChatModel ollamaChatModel, AirportInfoTool airportInfoTool
     ) {
         return ChatClient.builder(ollamaChatModel)
                 .defaultAdvisors(new SimpleLoggerAdvisor())
