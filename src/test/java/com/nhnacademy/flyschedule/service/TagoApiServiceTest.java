@@ -9,6 +9,7 @@ import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -18,16 +19,13 @@ import java.util.List;
 
 @Slf4j
 @SpringBootTest
+@EnabledIfEnvironmentVariable(named = "RUN_TAGO_API_TESTS", matches = "true")
 class TagoApiServiceTest {
 
     @Autowired
     TagoApiService tagoApiService;
 
     ObjectMapper objectMapper = new ObjectMapper();
-
-    @BeforeEach
-    void setUp() {
-    }
 
     @Test
     void getFlightInfoList() throws JsonProcessingException {

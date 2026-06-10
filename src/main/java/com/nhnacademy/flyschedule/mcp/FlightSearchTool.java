@@ -3,6 +3,7 @@ package com.nhnacademy.flyschedule.mcp;
 import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
 import com.nhnacademy.flyschedule.service.agent.FlightSearchAgent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class FlightSearchTool {
@@ -33,6 +35,9 @@ public class FlightSearchTool {
             @ToolParam(description = "날짜 (예: 내일, 모레, 2025-03-09)") String date,
             @ToolParam(required = false, description = "항공사별 반환할 최대 항공편 수. 생략하면 3") Integer limitPerAirline
     ) {
+        log.info("MCP Tool 호출: flights(departure={}, arrival={}, date={})",
+                departure, arrival, date);
+
         return limitFlightsPerAirline(
                 flightSearchAgent.search(departure, arrival, date),
                 limitPerAirline
@@ -53,6 +58,9 @@ public class FlightSearchTool {
             @ToolParam(description = "이 시간 이후 출발 항공편만 조회합니다. HH:mm 형식 (예: 13:00)") String afterTime,
             @ToolParam(required = false, description = "항공사별 반환할 최대 항공편 수. 생략하면 3") Integer limitPerAirline
     ) {
+        log.info("MCP Tool 호출: flightsTimeFilter(departure={}, arrival={}, date={}, afterTime={})",
+                departure, arrival, date, afterTime);
+
         return limitFlightsPerAirline(
                 flightSearchAgent.searchWithTimeFilter(departure, arrival, date, afterTime),
                 limitPerAirline
@@ -74,6 +82,9 @@ public class FlightSearchTool {
             @ToolParam(required = false, description = "최대 일반석 운임. 지정하지 않으면 상한 없음") String maxPrice,
             @ToolParam(required = false, description = "항공사별 반환할 최대 항공편 수. 생략하면 3") Integer limitPerAirline
     ) {
+        log.info("MCP Tool 호출: flightsPriceFilter(departure={}, arrival={}, date={}, minPrice={}, maxPrice={})",
+                departure, arrival, date, minPrice, maxPrice);
+
         return limitFlightsPerAirline(
                 flightSearchAgent.searchWithPriceFilter(departure, arrival, date, minPrice, maxPrice),
                 limitPerAirline

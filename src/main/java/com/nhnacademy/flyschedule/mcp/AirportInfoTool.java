@@ -30,9 +30,9 @@ public class AirportInfoTool {
                     "공항 이름을 입력하면 해당공항의 코드를 반환합니다. "
     )
     public String getAirportCode(
-            @ToolParam(description = "공항 이름 (예: 광주, 김포, 제주)") String airportName) {
-
-        log.info("MCP Tool 호출: getAirportCode(airportName={})", airportName);
+            @ToolParam(description = "공항 이름 (예: 광주, 김포, 제주)") String airportName
+    ) {
+        log.info("MCP Tool 호출: airportCode(airportName={})", airportName);
 
         return airPortCodeAgent.getAirportCode(airportName);
     }
