@@ -1,13 +1,9 @@
-package com.nhnacademy.flyschedule.tool;
+package com.nhnacademy.flyschedule.service.agent;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.flyschedule.dto.request.FlightInfoRequest;
 import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
 import com.nhnacademy.flyschedule.service.TagoApiService;
-import com.nhnacademy.flyschedule.service.agent.AirPortCodeAgent;
-import com.nhnacademy.flyschedule.service.agent.DataParserAgent;
-import com.nhnacademy.flyschedule.service.agent.FlightGroupingAgent;
-import com.nhnacademy.flyschedule.service.agent.TimeFilterAgent;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +31,9 @@ class AgentIntegrationTest {
 
     @Autowired
     private FlightGroupingAgent flightGroupingAgent;
+
+    @Autowired
+    private PriceFilterAgent priceFilterAgent;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -80,5 +79,30 @@ class AgentIntegrationTest {
         log.info(objectMapper
                 .writerWithDefaultPrettyPrinter()
                 .writeValueAsString(afterInfo));
+
+        log.info("=== 4만원 이상 조회 6만원 미만 조회 ===");
+        List<FlightInfoResponse> priceResponse = priceFilterAgent.filterByPriceRange(flightInfoList, 40000, 60000);
+        log.info(objectMapper
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(priceResponse));
+
+
+        log.info("=== 가장 싼 항공편 조회 ===");
+        FlightInfoResponse cheapestPriceFlight = priceFilterAgent.findCheapestPrice(flightInfoList);
+        log.info("most cheapestPriceFlight: {}",
+                objectMapper.writerWithDefaultPrettyPrinter()
+                        .writeValueAsString(cheapestPriceFlight));
+
+        log.info("=== 가장 비싼 항공편 조회 ===");
+        FlightInfoResponse mostExpensivePriceFlight = priceFilterAgent.findMostExpensivePrice(flightInfoList);
+        log.info("most cheapestPriceFlight: {}",
+                objectMapper.writerWithDefaultPrettyPrinter()
+                        .writeValueAsString(mostExpensivePriceFlight));
+
+        log.info("=== 평균 항공편 가격 ===");
+        double price = priceFilterAgent.calculateAveragePrice(flightInfoList);
+        log.info("averagePrice: {}", price);
+
+
     }
 }

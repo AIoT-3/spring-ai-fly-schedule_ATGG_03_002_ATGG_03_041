@@ -1,5 +1,6 @@
 package com.nhnacademy.flyschedule.config;
 
+import com.nhnacademy.flyschedule.tool.AirportInfoTool;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.model.ChatModel;
@@ -13,10 +14,11 @@ public class ChatClientConfig {
     @Primary
     @Bean
     public ChatClient.Builder ollamaChatClientBuilder(
-            @Qualifier("ollamaChatModel") ChatModel ollamaChatModel
+            @Qualifier("ollamaChatModel") ChatModel ollamaChatModel, AirportInfoTool airportInfoTool
     ) {
         return ChatClient.builder(ollamaChatModel)
-                .defaultAdvisors(new SimpleLoggerAdvisor());
+                .defaultAdvisors(new SimpleLoggerAdvisor())
+                .defaultTools(airportInfoTool);
     }
 
     @Bean
