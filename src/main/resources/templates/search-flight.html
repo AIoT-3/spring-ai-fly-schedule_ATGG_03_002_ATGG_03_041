@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>항공편 검색 시스템</title>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
+
+    <style>
+        body { background-color: #f4f6fa; }
+
+        /* 결과창 디자인 */
+        .response-card {
+            margin-top: 1rem;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #e6e8e9;
+            border-radius: 4px;
+            padding: 1rem;
+            background: #fafbfc;
+        }
+
+        /* 로딩 오버레이 */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loading-overlay.active { display: flex; }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="page-wrapper">
+        <div class="container-xl py-4">
+            <div class="row row-cards">
+                <div class="col-12">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h2 class="text-white">✈️ 항공편 검색 시스템</h2>
+                            <p class="mb-0 opacity-75">공항 코드 및 항공사 정보를 실시간으로 조회합니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header"><h3 class="card-title">공항 정보 조회</h3></div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" id="airportName" placeholder="공항 이름을 입력하세요 (예: 인천)">
+                            </div>
+                            <div class="d-flex gap-2 mb-3">
+                                <button class="btn btn-outline-primary w-50" onclick="getAirportList()">전체 목록</button>
+                                <button class="btn btn-primary w-50" onclick="getAirportCode()">코드 조회</button>
+                            </div>
+                            <div id="airportResult" class="response-card" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header"><h3 class="card-title">항공사 정보</h3></div>
+                        <div class="card-body text-center py-5">
+                            <i class="ti ti-plane-departure fs-1 text-muted"></i>
+                            <p class="mt-3 text-muted">항공사 정보 조회 기능이 준비 중입니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="text-center">
+        <div class="spinner-border text-primary" role="status"></div>
+        <div class="mt-2 fw-bold">데이터를 불러오는 중입니다...</div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+<script>
+    const API_BASE = '/api/mcp';
+
+    async function callAPI(type, url, formatFunc) {
+        const resultDiv = document.getElementById(`${type}Result`);
+        showLoading();
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`에러 발생: ${response.status}`);
+            const data = await response.json();
+            resultDiv.innerHTML = formatFunc ? formatFunc(data) : `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            resultDiv.style.display = 'block';
+        } catch (error) {
+            resultDiv.innerHTML = `<div class="alert alert-danger mb-0">${error.message}</div>`;
+            resultDiv.style.display = 'block';
+        } finally {
+            hideLoading();
+        }
+    }
+
+    function formatAirports(airports) {
+        return `
+            <div class="alert alert-success py-2 mb-2">총 ${airports.length}개 조회됨</div>
+            <ul class="list-unstyled mb-0">
+                ${airports.map(a => `<li class="p-2 border-bottom border-light">${a.airportId} - <strong>${a.airportNm}</strong></li>`).join('')}
+            </ul>
+        `;
+    }
+
+    function getAirportList() { callAPI('airport', `${API_BASE}/airports`, formatAirports); }
+    function getAirportCode() {
+        const name = document.getElementById('airportName').value;
+        if (!name.trim()) return alert('공항 이름을 입력하세요.');
+        callAPI('airport', `${API_BASE}/airports/code?airportName=${encodeURIComponent(name)}`);
+    }
+
+    function showLoading() { document.getElementById('loadingOverlay').classList.add('active'); }
+    function hideLoading() { document.getElementById('loadingOverlay').classList.remove('active'); }
+</script>
+</body>
+</html>

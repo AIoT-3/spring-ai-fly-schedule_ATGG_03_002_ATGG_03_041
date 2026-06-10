@@ -1,5 +1,6 @@
 package com.nhnacademy.flyschedule.config;
 
+
 import com.nhnacademy.flyschedule.mcp.AirlineInfoTool;
 import com.nhnacademy.flyschedule.mcp.AirportInfoTool;
 import com.nhnacademy.flyschedule.mcp.FlightSearchTool;
@@ -23,7 +24,7 @@ public class ChatClientConfig {
     ) {
         return ChatClient.builder(ollamaChatModel)
                 .defaultAdvisors(new SimpleLoggerAdvisor())
-                .defaultTools(airportInfoTool,  airlineInfoTool, flightSearchTool);
+                .defaultTools(airportInfoTool, airlineInfoTool, flightSearchTool);
     }
 
     @Bean
