@@ -1,0 +1,51 @@
+package com.nhnacademy.flyschedule.config;
+
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@Slf4j
+@SpringBootTest
+@EnabledIfEnvironmentVariable(named = "RUN_LLM_TESTS", matches = "true")
+class ChatClientLlmResponseTest {
+    private final ChatClient ollamaChatClient;
+    private final ChatClient geminiChatClient;
+
+
+    ChatClientLlmResponseTest(
+            @Qualifier("ollamaChatClientBuilder") ChatClient.Builder ollamachatClientBuilder,
+            @Qualifier("geminiChatClientBuilder") ChatClient.Builder geminiChatClientBuilder
+    ) {
+        this.ollamaChatClient = ollamachatClientBuilder.build();
+        this.geminiChatClient = geminiChatClientBuilder.build();
+    }
+
+    @Test
+    void ollamaResponseLogTest() {
+        llmResponse(ollamaChatClient);
+    }
+
+    @Test
+    void geminiResponseLogTest() {
+        llmResponse(geminiChatClient);
+    }
+
+    private void llmResponse(ChatClient chatClient) {
+        String userText = "내일 광주에서 제주로 가는 항공편 조회해서 보여줘.";
+
+        String response = chatClient.prompt()
+                .user(userText)
+                .call()
+                .content();
+
+        log.info("LLM user text: {}", userText);
+        log.info("LLM response: {}", response);
+
+        assertThat(response).isNotBlank();
+    }
+}
