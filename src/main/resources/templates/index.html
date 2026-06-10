@@ -1,10 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>메인 페이지</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>항공 서비스 포털</title>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" rel="stylesheet"/>
 </head>
-<body>
+<body class="d-flex flex-column">
+<div class="page page-center">
+    <div class="container container-tight py-4">
+        <div class="text-center mb-4">
+            <h1>✈️ 항공 서비스 포털</h1>
+            <p class="text-muted">원하시는 서비스 메뉴를 선택하세요.</p>
+        </div>
 
+        <div class="card card-md">
+            <div class="card-body">
+                <div class="d-grid gap-3">
+                    <a href="/search-flight" class="btn btn-primary btn-lg">
+                        항공편 검색 시스템으로 이동
+                    </a>
+
+                    <a href="#" class="btn btn-outline-secondary btn-lg disabled">
+                        자연어 검색 기능 (준비중)
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
