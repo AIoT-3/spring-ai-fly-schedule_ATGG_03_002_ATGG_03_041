@@ -23,6 +23,4 @@ public class McpController {
                 .status(HttpStatus.OK)
                 .body(airportInfoTool.getAirportInfo());
     }
-
-
 }

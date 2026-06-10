@@ -14,7 +14,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AirPortCodeAgent {
+public class AirportCodeAgent {
     private final TagoApiService tagoApiService;
     private final Map<String, String> airportMap = new LinkedHashMap<>();
 

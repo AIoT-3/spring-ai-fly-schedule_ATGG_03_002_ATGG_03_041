@@ -16,12 +16,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class AirPortCodeAgentTest {
+class AirportCodeAgentTest {
 
     @Mock
     private TagoApiService tagoApiService;
 
-    private AirPortCodeAgent airPortCodeAgent;
+    private AirportCodeAgent airPortCodeAgent;
 
     @BeforeEach
     void setUp() {
@@ -32,7 +32,7 @@ class AirPortCodeAgentTest {
                         new AirportInfoResponse("김포", "NAARKSS")
                 ));
 
-        airPortCodeAgent = new AirPortCodeAgent(tagoApiService);
+        airPortCodeAgent = new AirportCodeAgent(tagoApiService);
         airPortCodeAgent.init();
     }
 

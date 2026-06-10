@@ -1,7 +1,7 @@
 package com.nhnacademy.flyschedule.tool;
 
 import com.nhnacademy.flyschedule.dto.resposne.AirportInfoResponse;
-import com.nhnacademy.flyschedule.service.agent.AirPortCodeAgent;
+import com.nhnacademy.flyschedule.service.agent.AirportCodeAgent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.tool.annotation.Tool;
@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class AirportInfoTool {
-    private final AirPortCodeAgent airPortCodeAgent;
+    private final AirportCodeAgent airPortCodeAgent;
 
     @Tool(
             description = "전제 공항 목록을 조회합니다. " +
