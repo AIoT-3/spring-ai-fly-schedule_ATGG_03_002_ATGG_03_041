@@ -1,11 +1,14 @@
 package com.nhnacademy.flyschedule.mcp;
 
+import com.nhnacademy.flyschedule.dto.resposne.AirlineInfoResponse;
 import com.nhnacademy.flyschedule.service.agent.AirlineCodeAgent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Slf4j
 @Component
@@ -27,4 +30,14 @@ public class AirlineInfoTool {
 
         return airlineCodeAgent.getAirlineCode(airlineName);
     }
+
+    @Tool(
+            description = "전제 항공사 목록을 조회합니다. " +
+                    "국내 모든 항공사 ID와 이름을 반환합니다."
+    )
+    public List<AirlineInfoResponse> getAirlineInfo() {
+
+        return airlineCodeAgent.getAirlineInfoList();
+    }
+
 }

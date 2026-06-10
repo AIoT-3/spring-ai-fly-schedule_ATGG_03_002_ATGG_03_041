@@ -35,10 +35,20 @@ public class AirlineCodeAgent {
 
         String result = airlineCodeMap.get(airlineName.trim());
 
-        if(result == null) {
+        if (result == null) {
             throw new IllegalArgumentException("해당하는 항공사 정보가 없습니다.");
         }
 
         return result;
     }
+
+    public List<AirlineInfoResponse> getAirlineInfoList() {
+        return airlineCodeMap.entrySet()
+                .stream()
+                .map(entry ->
+                        new AirlineInfoResponse(entry.getKey(), entry.getValue())
+                )
+                .toList();
+    }
+
 }

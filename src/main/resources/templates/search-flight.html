@@ -7,7 +7,10 @@
     <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
 
     <style>
-        body { background-color: #f4f6fa; }
+        body {
+            background-color: #f4f6fa;
+        }
+
         .response-card {
             margin-top: 1rem;
             max-height: 250px;
@@ -17,6 +20,7 @@
             padding: 1rem;
             background: #fafbfc;
         }
+
         .loading-overlay {
             display: none;
             position: fixed;
@@ -26,7 +30,10 @@
             align-items: center;
             z-index: 9999;
         }
-        .loading-overlay.active { display: flex; }
+
+        .loading-overlay.active {
+            display: flex;
+        }
     </style>
 </head>
 <body>
@@ -55,7 +62,8 @@
                         <div class="card-header"><h3 class="card-title">공항 정보 조회</h3></div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <input type="text" class="form-control" id="airportName" placeholder="공항 이름을 입력하세요 (예: 인천)">
+                                <input type="text" class="form-control" id="airportName"
+                                       placeholder="공항 이름을 입력하세요 (예: 인천)">
                             </div>
                             <div class="d-flex gap-2 mb-3">
                                 <button class="btn btn-outline-primary w-50" onclick="getAirportList()">전체 목록</button>
@@ -70,6 +78,15 @@
                     <div class="card h-100">
                         <div class="card-header"><h3 class="card-title">항공사 정보</h3></div>
                         <div class="card-body">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" id="airlineName"
+                                       placeholder="공항 이름을 입력하세요 (예: 아시아나항공)">
+                            </div>
+                            <div class="d-flex gap-2 mb-3">
+                                <button class="btn btn-outline-primary w-50" onclick="getAirlineList()">전체 목록</button>
+                                <button class="btn btn-primary w-50" onclick="getAirlineId()">코드 조회</button>
+                            </div>
+                            <div id="airlineResult" class="response-card" style="display:none;"></div>
                         </div>
                     </div>
                 </div>
@@ -115,16 +132,62 @@
         `;
     }
 
-    function getAirportList() { callAPI('airport', `${API_BASE}/airports`, formatAirports); }
+    function formatAirportCode(airport) {
+        return `
+        <div class="alert alert-success mb-0">
+            <strong>${airport.airportNm}</strong>
+            (${airport.airportId})
+        </div>
+    `;
+
+    }
+
+    function formatAirlines(airlines) {
+        return `
+            <div class="alert alert-success py-2 mb-2">총 ${airlines.length}개 조회됨</div>
+            <ul class="list-unstyled mb-0">
+                ${airlines.map(a => `<li class="p-2 border-bottom border-light">${a.airlineId} - <strong>${a.airlineNm}</strong></li>`).join('')}
+            </ul>
+        `;
+    }
+
+    function formatAirlineId(airline) {
+        return `
+        <div class="alert alert-success mb-0">
+            <strong>${airline.airlineNm}</strong>
+            (${airline.airlineId})
+        </div>
+    `;
+    }
+
+    function getAirportList() {
+        callAPI('airport', `${API_BASE}/airports`, formatAirports);
+    }
 
     function getAirportCode() {
         const name = document.getElementById('airportName').value;
         if (!name.trim()) return alert('공항 이름을 입력하세요.');
-        callAPI('airport', `${API_BASE}/airports/code?airportName=${encodeURIComponent(name)}`);
+        callAPI('airport', `${API_BASE}/airports/code?airportName=${encodeURIComponent(name)}`, formatAirportCode);
     }
 
-    function showLoading() { document.getElementById('loadingOverlay').classList.add('active'); }
-    function hideLoading() { document.getElementById('loadingOverlay').classList.remove('active'); }
+    function getAirlineList() {
+        callAPI('airline', `${API_BASE}/airlines`, formatAirlines);
+    }
+
+    function getAirlineId() {
+        const name = document.getElementById('airlineName').value;
+        if (!name.trim()) return alert('항공사 명을 입력하세요.');
+        callAPI('airline', `${API_BASE}/airlines/id?airlineName=${encodeURIComponent(name)}`, formatAirlineId);
+
+    }
+
+    function showLoading() {
+        document.getElementById('loadingOverlay').classList.add('active');
+    }
+
+    function hideLoading() {
+        document.getElementById('loadingOverlay').classList.remove('active');
+    }
 </script>
 </body>
 </html>
