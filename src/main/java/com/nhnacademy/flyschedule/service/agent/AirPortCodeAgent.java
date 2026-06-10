@@ -75,6 +75,15 @@ public class AirPortCodeAgent {
 
     }
 
+    public List<AirportInfoResponse> getAirportInfoList() {
+        return airportMap.entrySet()
+                .stream()
+                .map(entry ->
+                        new AirportInfoResponse(entry.getValue(), entry.getKey())
+                )
+                .toList();
+    }
+
     private String normalizeAirportName(String airportName) {
         return airportName
                 .replace("국제공항", "")
