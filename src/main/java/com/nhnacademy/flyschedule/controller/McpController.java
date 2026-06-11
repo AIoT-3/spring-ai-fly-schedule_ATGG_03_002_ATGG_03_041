@@ -1,9 +1,12 @@
 package com.nhnacademy.flyschedule.controller;
 
+import com.nhnacademy.flyschedule.dto.request.FlightInfoRequest;
 import com.nhnacademy.flyschedule.dto.resposne.AirlineInfoResponse;
 import com.nhnacademy.flyschedule.dto.resposne.AirportInfoResponse;
+import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
 import com.nhnacademy.flyschedule.mcp.AirlineInfoTool;
 import com.nhnacademy.flyschedule.mcp.AirportInfoTool;
+import com.nhnacademy.flyschedule.mcp.FlightSearchTool;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,6 +25,7 @@ import java.util.List;
 public class McpController {
     private final AirportInfoTool airportInfoTool;
     private final AirlineInfoTool airlineInfoTool;
+    private final FlightSearchTool flightSearchTool;
 
     @GetMapping("/airports")
     public ResponseEntity<List<AirportInfoResponse>> getAirports() {
@@ -47,6 +53,13 @@ public class McpController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new AirlineInfoResponse(airlineName, airlineInfoTool.getAirlineId(airlineName)));
+    }
+
+    @GetMapping("/flight/search")
+    public ResponseEntity<Map<String, List<FlightInfoResponse>>> getFlightSearch(@Valid FlightInfoRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(flightSearchTool.searchFlights(request.depAirportId(), request.arrAirportId(), request.departmentDate(), 3));
     }
 
 }
