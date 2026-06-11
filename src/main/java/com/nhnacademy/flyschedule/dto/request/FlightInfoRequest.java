@@ -1,9 +1,8 @@
 package com.nhnacademy.flyschedule.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * 항공편 조회 요청 dto

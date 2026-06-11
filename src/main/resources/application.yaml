@@ -18,7 +18,7 @@ spring:
         api-key: ${GEMINI_API_KEY}        # 환경 변수
         chat:
           options:
-            model: gemini-2.5-flash       # Gemini 2.5 Flash 모델
+            model: gemma-4-31b-it       # Gemini 2.5 Flash 모델
             temperature: 0.0              # 결정적 응답
             max-output-tokens: 1024        # 최대 출력 토큰 수
             top-p: 0.9                    # Nucleus sampling
@@ -32,3 +32,9 @@ data-go-kr:
   api:
     url: https://apis.data.go.kr/1613000/DmstcFlightNvgInfo
     service-key: ${DATA_GO_KR_SERVICE_KEY} # 환경 변수
+
+app:
+  prompt:
+    flight-search:
+      system-path: prompts/flight-search-extract/system.prompt.md
+      user-path: prompts/flight-search-extract/user.prompt.md

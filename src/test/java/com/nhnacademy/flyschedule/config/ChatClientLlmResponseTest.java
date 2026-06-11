@@ -7,7 +7,8 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
 @SpringBootTest
@@ -46,6 +47,7 @@ class ChatClientLlmResponseTest {
         log.info("LLM user text: {}", userText);
         log.info("LLM response: {}", response);
 
-        assertThat(response).isNotBlank();
+        assertNotNull(response);
+        assertFalse(response.isBlank());
     }
 }
