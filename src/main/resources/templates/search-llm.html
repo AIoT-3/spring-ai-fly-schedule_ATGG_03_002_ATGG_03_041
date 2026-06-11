@@ -1,123 +1,180 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>항공편 검색 시스템</title>
-  <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" rel="stylesheet"/>
-  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <title>항공편 검색 시스템</title>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
 
-  <style>
-    body {
-      background-color: #f4f6fa;
-    }
+    <style>
+        body {
+            background-color: #f4f6fa;
+        }
 
-    .response-card {
-      margin-top: 1rem;
-      max-height: 250px;
-      overflow-y: auto;
-      border: 1px solid #e6e8e9;
-      border-radius: 4px;
-      padding: 1rem;
-      background: #fafbfc;
-    }
+        .response-card {
+            margin-top: 1rem;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #e6e8e9;
+            border-radius: 4px;
+            padding: 1rem;
+            background: #fafbfc;
+        }
 
-    .loading-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(255, 255, 255, 0.9);
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
 
-    .loading-overlay.active {
-      display: flex;
-    }
-  </style>
+        .loading-overlay.active {
+            display: flex;
+        }
+    </style>
 </head>
 <body>
 <div class="page">
-  <div class="page-wrapper">
-    <div class="container-xl py-4">
-      <div class="row row-cards">
-        <div class="col-12">
-          <div class="card bg-primary text-white">
-            <div class="card-body">
-              <a href="/" class="text-white text-decoration-none">
-                <h2>✈️ 항공편 검색 시스템</h2>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="page-header d-print-none">
-          <div class="col-auto ms-auto d-print-none">
+    <div class="page-wrapper">
+        <div class="container-xl py-4">
+            <div class="row row-cards">
+                <div class="col-12">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <a href="/" class="text-white text-decoration-none">
+                                <h2>✈️ 항공편 검색 시스템</h2>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-header d-print-none">
+                    <div class="col-auto ms-auto d-print-none">
                             <span class="d-none d-sm-inline">
                                 <a href="/" class="btn btn-white">
                                     <i class="ti ti-home me-1"></i>
                                     메인으로
                                 </a>
                             </span>
-          </div>
-        </div>
+                    </div>
+                </div>
 
-        <div class="col-12">
-          <div class="card">
-            <div class="card-header"><h3 class="card-title">자연어 검색 시스템</h3></div>
-            <div class="card-body">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header"><h3 class="card-title">자연어 검색 시스템</h3></div>
+                        <div class="card-body">
 
-              <form id="flightSearchForm">
+                            <div class="mb-3">
+                                <label class="form-label">검색하고 싶은 내용을 자연어로 입력하세요</label>
+                                <textarea class="form-control" id="messageInput" rows="3"
+                                          placeholder="예: 2026년3월25일 광주에서 제주로 가는 10시 이후 항공편 조회 해줘"></textarea>
+                            </div>
+                            <div id="flightResult" class="response-card" style="display:none;"></div>
+                            <button class="btn btn-primary btn-sm" onclick="searchFlightSchedule()">
+                                <i class="ti ti-git-branch me-1"></i>
+                                검색
+                            </button>
+                        </div>
 
-              </form>
-              <div id="flightResult" class="response-card" style="display:none;"></div>
+
+                    </div>
+                </div>
+
+
             </div>
-          </div>
         </div>
-
-
-      </div>
     </div>
-  </div>
 </div>
 
 <div class="loading-overlay" id="loadingOverlay">
-  <div class="text-center">
-    <div class="spinner-border text-primary" role="status"></div>
-    <div class="mt-2 fw-bold">데이터를 불러오는 중입니다...</div>
-  </div>
+    <div class="text-center">
+        <div class="spinner-border text-primary" role="status"></div>
+        <div class="mt-2 fw-bold">데이터를 불러오는 중입니다...</div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
 <script>
-  const API_BASE = '/api/mcp';
+    const API_BASE = '/api/llm';
 
-  async function callAPI(type, url, formatFunc) {
-    const resultDiv = document.getElementById(`${type}Result`);
-    showLoading();
-    try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`에러 발생: ${response.status}`);
-      const data = await response.json();
-      resultDiv.innerHTML = formatFunc ? formatFunc(data) : `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-      resultDiv.style.display = 'block';
-    } catch (error) {
-      resultDiv.innerHTML = `<div class="alert alert-danger mb-0">${error.message}</div>`;
-      resultDiv.style.display = 'block';
-    } finally {
-      hideLoading();
+    async function callAPI(type, url, formatFunc) {
+        const resultDiv = document.getElementById(`${type}Result`);
+        showLoading();
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`에러 발생: ${response.status}`);
+            const data = await response.json();
+            resultDiv.innerHTML = formatFunc ? formatFunc(data) : `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            resultDiv.style.display = 'block';
+        } catch (error) {
+            resultDiv.innerHTML = `<div class="alert alert-danger mb-0">${error.message}</div>`;
+            resultDiv.style.display = 'block';
+        } finally {
+            hideLoading();
+        }
     }
-  }
+
+    async function searchFlightSchedule() {
+        const message = document.getElementById('messageInput').value;
+
+        callAPI(
+            'flight',
+            API_BASE + '/search?message=' + encodeURIComponent(message),
+            formatFlightResults
+        );
+    }
+
+    function formatFlightResults(data) {
+        const flights = data;
+        const airlines = Object.keys(flights);
+
+        if (airlines.length === 0) {
+            return `<div class="alert alert-warning">검색 결과 없음</div>`;
+        }
+
+        let html = '';
+
+        airlines.forEach(airline => {
+            const list = flights[airline];
+
+            html += `
+            <h4 class="mt-3">
+                <span class="badge bg-primary">${airline}</span>
+                <span class="badge bg-secondary">${list.length}편</span>
+            </h4>
+        `;
+
+            list.forEach(flight => {
+                const dep = flight.depPlandTime.slice(8, 10) + ":" + flight.depPlandTime.slice(10, 12);
+                const arr = flight.arrPlandTime.slice(8, 10) + ":" + flight.arrPlandTime.slice(10, 12);
+
+                const price = flight.economyCharge > 0
+                    ? flight.economyCharge.toLocaleString() + "원"
+                    : "가격 없음";
+
+                html += `
+                <div class="border rounded p-2 mb-2">
+                    <div><b>${dep} → ${arr}</b></div>
+                    <div>${flight.vihicleId}</div>
+                    <div>${price}</div>
+                </div>
+            `;
+            });
+        });
+
+        return html;
+    }
 
 
+    function showLoading() {
+        document.getElementById('loadingOverlay').classList.add('active');
+    }
 
-
-  function showLoading() {
-    document.getElementById('loadingOverlay').classList.add('active');
-  }
-
-  function hideLoading() {
-    document.getElementById('loadingOverlay').classList.remove('active');
-  }
+    function hideLoading() {
+        document.getElementById('loadingOverlay').classList.remove('active');
+    }
 
 
 </script>
