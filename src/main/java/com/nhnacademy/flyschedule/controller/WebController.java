@@ -16,5 +16,10 @@ public class WebController {
         return "search-flight";
     }
 
+    @GetMapping("/search-llm")
+    public String searchLlm() {
+        return "search-llm";
+    }
+
 
 }

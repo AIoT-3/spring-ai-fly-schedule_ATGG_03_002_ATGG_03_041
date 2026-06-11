@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>항공편 검색 시스템</title>
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
+
+  <style>
+    body {
+      background-color: #f4f6fa;
+    }
+
+    .response-card {
+      margin-top: 1rem;
+      max-height: 250px;
+      overflow-y: auto;
+      border: 1px solid #e6e8e9;
+      border-radius: 4px;
+      padding: 1rem;
+      background: #fafbfc;
+    }
+
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.9);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .loading-overlay.active {
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="page-wrapper">
+    <div class="container-xl py-4">
+      <div class="row row-cards">
+        <div class="col-12">
+          <div class="card bg-primary text-white">
+            <div class="card-body">
+              <a href="/" class="text-white text-decoration-none">
+                <h2>✈️ 항공편 검색 시스템</h2>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="page-header d-print-none">
+          <div class="col-auto ms-auto d-print-none">
+                            <span class="d-none d-sm-inline">
+                                <a href="/" class="btn btn-white">
+                                    <i class="ti ti-home me-1"></i>
+                                    메인으로
+                                </a>
+                            </span>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header"><h3 class="card-title">자연어 검색 시스템</h3></div>
+            <div class="card-body">
+
+              <form id="flightSearchForm">
+
+              </form>
+              <div id="flightResult" class="response-card" style="display:none;"></div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="text-center">
+    <div class="spinner-border text-primary" role="status"></div>
+    <div class="mt-2 fw-bold">데이터를 불러오는 중입니다...</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+<script>
+  const API_BASE = '/api/mcp';
+
+  async function callAPI(type, url, formatFunc) {
+    const resultDiv = document.getElementById(`${type}Result`);
+    showLoading();
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`에러 발생: ${response.status}`);
+      const data = await response.json();
+      resultDiv.innerHTML = formatFunc ? formatFunc(data) : `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+      resultDiv.style.display = 'block';
+    } catch (error) {
+      resultDiv.innerHTML = `<div class="alert alert-danger mb-0">${error.message}</div>`;
+      resultDiv.style.display = 'block';
+    } finally {
+      hideLoading();
+    }
+  }
+
+
+
+
+  function showLoading() {
+    document.getElementById('loadingOverlay').classList.add('active');
+  }
+
+  function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+  }
+
+
+</script>
+</body>
+</html>
