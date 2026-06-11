@@ -79,7 +79,7 @@ public class AirportCodeAgent {
         return airportMap.entrySet()
                 .stream()
                 .map(entry ->
-                        new AirportInfoResponse(entry.getValue(), entry.getKey())
+                        new AirportInfoResponse(entry.getKey(), entry.getValue())
                 )
                 .toList();
     }
