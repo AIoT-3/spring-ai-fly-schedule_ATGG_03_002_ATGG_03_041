@@ -7,6 +7,7 @@ import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.AdvisorParams;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,6 +22,7 @@ public class FlightSearchExtractService {
     private final FlightSearchPrompt flightSearchPrompt;
 
     public FlightSearchExtractService(
+            @Qualifier("geminiChatClientBuilder")
             ChatClient.Builder chatClientBuilder,
             Validator validator,
             FlightSearchPrompt flightSearchPrompt
