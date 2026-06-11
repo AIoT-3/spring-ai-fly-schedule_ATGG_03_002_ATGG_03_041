@@ -1,6 +1,7 @@
 package com.nhnacademy.flyschedule.service.ai;
 
 import com.nhnacademy.flyschedule.dto.FlightSearchExtractResult;
+import com.nhnacademy.flyschedule.service.ai.prompt.FlightSearchPrompt;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +18,16 @@ import java.util.stream.Collectors;
 public class FlightSearchExtractService {
     private final ChatClient chatClient;
     private final Validator validator;
+    private final FlightSearchPrompt flightSearchPrompt;
 
     public FlightSearchExtractService(
             ChatClient.Builder chatClientBuilder,
-            Validator validator
+            Validator validator,
+            FlightSearchPrompt flightSearchPrompt
     ) {
         this.chatClient = chatClientBuilder.build();
         this.validator = validator;
+        this.flightSearchPrompt = flightSearchPrompt;
     }
 
     public FlightSearchExtractResult extractFlightSearch(String message) {
@@ -36,25 +40,10 @@ public class FlightSearchExtractService {
         try {
             result = chatClient.prompt()
                     .advisors(AdvisorParams.ENABLE_NATIVE_STRUCTURED_OUTPUT)
-                    .system("""
-                            너는 항공편 검색 시스템의 파라미터 추출 전문가다.
-                            자연어로 된 사용자 메시지를 분석하여 항공편 검색에 필요한 파라미터를 추출한다.
-                            
-                            ## 규칙
-                            1. 날짜는 반드시 YYYY-MM-DD 형식으로 변환
-                            2. 시간은 24시간제 HH:MM 형식
-                            3. "내일", "모레" 등 상대적 날짜 표현은 오늘 날짜를 기준으로 계산하여 YYYY-MM-DD로 변환
-                            4. "오후 3시", "14시" 등의 표현은 HH:MM으로 변환
-                            5. 하나의 가격 값만 등장한 경우, 문맥에 따라 minPrice 또는 maxPrice 중 하나만 설정, 다른 값은 반드시 null로 설정.
-                            6. **사용자가 말하지 않은 파라미터는 추론하지 않고 null로 반환**
-                            """)
-                    .user(u -> u.text("""
-                                    오늘 날짜: {baseDate}
-                                    
-                                    ### 사용자 메세지
-                                    {message}""")
+                    .system(flightSearchPrompt.system())
+                    .user(u -> u.text(flightSearchPrompt.user())
                             .param("baseDate", baseDate)
-                            .param("message", message)
+                            .param("prompt", message)
                     ).call()
                     .entity(FlightSearchExtractResult.class);
 
@@ -77,14 +66,16 @@ public class FlightSearchExtractService {
             return null;
         }
 
+        PriceRange priceRange = normalizePriceRange(result.minPrice(), result.maxPrice());
+
         return new FlightSearchExtractResult(
-                result.departure(),
-                result.arrival(),
-                result.date(),
+                normalizeText(result.departure()),
+                normalizeText(result.arrival()),
+                normalizeText(result.date()),
                 normalizeText(result.afterTime()),
                 normalizeText(result.beforeTime()),
-                normalizeOptionalPrice(result.minPrice()),
-                normalizeOptionalPrice(result.maxPrice())
+                priceRange.minPrice(),
+                priceRange.maxPrice()
         );
     }
 
@@ -107,6 +98,25 @@ public class FlightSearchExtractService {
         }
 
         return value;
+    }
+
+    private PriceRange normalizePriceRange(Integer minPrice, Integer maxPrice) {
+        Integer normalizedMinPrice = normalizeOptionalPrice(minPrice);
+        Integer normalizedMaxPrice = normalizeOptionalPrice(maxPrice);
+
+        if (normalizedMinPrice != null
+                && normalizedMaxPrice != null
+                && normalizedMinPrice > normalizedMaxPrice) {
+            return new PriceRange(normalizedMaxPrice, normalizedMinPrice);
+        }
+
+        return new PriceRange(normalizedMinPrice, normalizedMaxPrice);
+    }
+
+    private record PriceRange(
+            Integer minPrice,
+            Integer maxPrice
+    ) {
     }
 
     private void validate(FlightSearchExtractResult result) {
