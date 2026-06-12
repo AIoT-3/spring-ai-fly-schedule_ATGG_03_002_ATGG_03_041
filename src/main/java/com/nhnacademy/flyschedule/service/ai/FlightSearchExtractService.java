@@ -35,6 +35,10 @@ public class FlightSearchExtractService {
         this.flightSearchPrompt = flightSearchPrompt;
     }
 
+    public FlightSearchExtractResult extractFlightSearch(String message) {
+        return extractFlightSearch(message, LocalDate.now().toString(), ModelType.defaultModel);
+    }
+
     public FlightSearchExtractResult extractFlightSearch(String message, ModelType modelType) {
         return extractFlightSearch(message, LocalDate.now().toString(), modelType);
     }

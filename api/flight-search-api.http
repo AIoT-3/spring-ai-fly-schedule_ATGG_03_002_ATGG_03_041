@@ -1,5 +1,5 @@
 ### 자연어 항공편 조회 - 기본
-POST http://localhost:8080/api/flights/natural-language
+POST http://localhost:8080/api/llm/search
 Content-Type: application/json
 
 {
@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ### 자연어 항공편 조회 - 시간 조건
-POST http://localhost:8080/api/flights/natural-language
+POST http://localhost:8080/api/llm/search
 Content-Type: application/json
 
 {
@@ -17,7 +17,7 @@ Content-Type: application/json
 }
 
 ### 자연어 항공편 조회 - 가격 조건
-POST http://localhost:8080/api/flights/natural-language
+POST http://localhost:8080/api/llm/search
 Content-Type: application/json
 
 {
@@ -26,7 +26,7 @@ Content-Type: application/json
 }
 
 ### 자연어 항공편 조회 - 시간/가격 복합 조건
-POST http://localhost:8080/api/flights/natural-language
+POST http://localhost:8080/api/llm/search
 Content-Type: application/json
 
 {

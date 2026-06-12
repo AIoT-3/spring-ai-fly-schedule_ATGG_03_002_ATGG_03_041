@@ -21,5 +21,4 @@ public class WebController {
         return "search-llm";
     }
 
-
 }

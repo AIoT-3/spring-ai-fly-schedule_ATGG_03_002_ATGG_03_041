@@ -72,10 +72,24 @@
                                           placeholder="예: 2026년3월25일 광주에서 제주로 가는 10시 이후 항공편 조회 해줘"></textarea>
                             </div>
                             <div id="flightResult" class="response-card" style="display:none;"></div>
-                            <button class="btn btn-primary btn-sm" onclick="searchFlightSchedule()">
-                                <i class="ti ti-git-branch me-1"></i>
-                                검색
-                            </button>
+                            <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" name="llmModel" id="modelGemini" value="gemini" checked>
+                                    <label class="btn btn-outline-primary" for="modelGemini">
+                                        <i class="ti ti-brand-google me-1"></i>Gemini
+                                    </label>
+
+                                    <input type="radio" class="btn-check" name="llmModel" id="modelOllama" value="ollama">
+                                    <label class="btn btn-outline-warning" for="modelOllama">
+                                        <i class="ti ti-server me-1"></i>Ollama
+                                    </label>
+                                </div>
+
+                                <button class="btn btn-primary btn-sm" onclick="searchFlightSchedule()">
+                                    <i class="ti ti-git-branch me-1"></i>
+                                    검색
+                                </button>
+                            </div>
                         </div>
 
 
@@ -99,11 +113,11 @@
 <script>
     const API_BASE = '/api/llm';
 
-    async function callAPI(type, url, formatFunc) {
+    async function callAPI(type, url, formatFunc, options = {}) {
         const resultDiv = document.getElementById(`${type}Result`);
         showLoading();
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, options);
             if (!response.ok) throw new Error(`에러 발생: ${response.status}`);
             const data = await response.json();
             resultDiv.innerHTML = formatFunc ? formatFunc(data) : `<pre>${JSON.stringify(data, null, 2)}</pre>`;
@@ -117,12 +131,28 @@
     }
 
     async function searchFlightSchedule() {
-        const message = document.getElementById('messageInput').value;
+        const message = document.getElementById('messageInput').value.trim();
+        const modelType = document.querySelector('input[name="llmModel"]:checked').value;
 
-        callAPI(
+        if (!message) {
+            alert('검색 내용을 입력하세요.');
+            return;
+        }
+
+        await callAPI(
             'flight',
-            API_BASE + '/search?message=' + encodeURIComponent(message),
-            formatFlightResults
+            `${API_BASE}/search`,
+            formatFlightResults,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message,
+                    modelType
+                })
+            }
         );
     }
 
