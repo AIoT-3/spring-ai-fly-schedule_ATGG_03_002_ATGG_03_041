@@ -1,6 +1,7 @@
 package com.nhnacademy.flyschedule.service.ai;
 
 import com.nhnacademy.flyschedule.dto.FlightSearchExtractResult;
+import com.nhnacademy.flyschedule.dto.ModelType;
 import com.nhnacademy.flyschedule.service.ai.prompt.FlightSearchPrompt;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -17,30 +18,42 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class FlightSearchExtractService {
-    private final ChatClient chatClient;
+    private final ChatClient ollamaChatClient;
+    private final ChatClient geminiChatClient;
     private final Validator validator;
     private final FlightSearchPrompt flightSearchPrompt;
 
     public FlightSearchExtractService(
-            @Qualifier("geminiChatClientBuilder")
-            ChatClient.Builder chatClientBuilder,
+            @Qualifier("ollamaPlainChatClientBuilder") ChatClient.Builder ollamaChatClientBuilder,
+            @Qualifier("geminiPlainChatClientBuilder") ChatClient.Builder geminiChatClientBuilder,
             Validator validator,
             FlightSearchPrompt flightSearchPrompt
     ) {
-        this.chatClient = chatClientBuilder.build();
+        this.ollamaChatClient = ollamaChatClientBuilder.build();
+        this.geminiChatClient = geminiChatClientBuilder.build();
         this.validator = validator;
         this.flightSearchPrompt = flightSearchPrompt;
     }
 
-    public FlightSearchExtractResult extractFlightSearch(String message) {
-        return extractFlightSearch(message, LocalDate.now().toString());
+    public FlightSearchExtractResult extractFlightSearch(String message, ModelType modelType) {
+        return extractFlightSearch(message, LocalDate.now().toString(), modelType);
     }
 
     FlightSearchExtractResult extractFlightSearch(String message, String baseDate) {
+        return extractFlightSearch(message, baseDate, ModelType.defaultModel);
+    }
+
+    FlightSearchExtractResult extractFlightSearch(
+            String message,
+            String baseDate,
+            ModelType modelType
+    ) {
+        ModelType model = ModelType.defaultIfNull(modelType);
+        log.info("항공편 파라미터 추출 모델: {}", model);
         FlightSearchExtractResult result;
 
         try {
-            result = chatClient.prompt()
+            result = getChatClient(model).prompt()
                     .advisors(AdvisorParams.ENABLE_NATIVE_STRUCTURED_OUTPUT)
                     .system(flightSearchPrompt.system())
                     .user(u -> u.text(flightSearchPrompt.user())
@@ -61,6 +74,13 @@ public class FlightSearchExtractService {
         log.info("최종 결과값 : {}", result);
 
         return result;
+    }
+
+    private ChatClient getChatClient(ModelType mode) {
+        return switch (mode) {
+            case OLLAMA -> ollamaChatClient;
+            case GEMINI -> geminiChatClient;
+        };
     }
 
     private FlightSearchExtractResult normalize(FlightSearchExtractResult result) {

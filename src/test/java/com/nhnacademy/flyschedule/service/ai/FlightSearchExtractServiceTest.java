@@ -2,14 +2,17 @@ package com.nhnacademy.flyschedule.service.ai;
 
 import com.nhnacademy.flyschedule.config.PromptConfig;
 import com.nhnacademy.flyschedule.dto.FlightSearchExtractResult;
+import com.nhnacademy.flyschedule.dto.ModelType;
 import com.nhnacademy.flyschedule.service.ai.prompt.PromptResourceLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -17,12 +20,27 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Slf4j
+@Tag("integration")
+@SpringBootTest(classes = {
+        FlightSearchExtractService.class,
+        PromptConfig.class,
+        PromptResourceLoader.class,
+        FlightSearchExtractServiceTest.ChatClientTestConfig.class
+})
+@EnableAutoConfiguration
+@TestExecutionListeners(
+        // 테스트 클래스 안의 Spring 의존성 주입만 처리
+        listeners = DependencyInjectionTestExecutionListener.class,
+        // REPLACE_DEFAULTS: Spring이 기본으로 등록하는 테스트 리스너들이 제거되고, 위의 리스너만 허용
+        mergeMode = TestExecutionListeners.MergeMode.REPLACE_DEFAULTS
+)
 abstract class FlightSearchExtractServiceTest {
     private static final String TEST_BASE_DATE = "2026-06-10";
 
@@ -30,6 +48,8 @@ abstract class FlightSearchExtractServiceTest {
     private FlightSearchExtractService flightSearchExtractService;
 
     protected abstract String providerName();
+
+    protected abstract ModelType modelType();
 
     @Test
     @DisplayName("명확한 요청")
@@ -52,11 +72,11 @@ abstract class FlightSearchExtractServiceTest {
     @DisplayName("날짜 표현이 있는 요청 - 상대적")
     void extractFlightSearch_valid_relativeDate() {
         assertValidPrompt(new ValidCase(
-                "내일 김포에서 부산 가는 항공편 조회해줘.",
+                "3일 뒤 김포에서 부산 가는 항공편 조회해줘.",
                 new ExpectedResult(
                         "김포",
                         "부산",
-                        "2026-06-11",
+                        "2026-06-13",
                         null,
                         null,
                         null,
@@ -202,10 +222,11 @@ abstract class FlightSearchExtractServiceTest {
 
     private void assertValidPrompt(ValidCase testCase) {
         log.info("LLM provider: {}", providerName());
+        log.info("LLM model type: {}", modelType());
         log.info("LLM extraction prompt: {}", testCase.prompt());
 
         FlightSearchExtractResult result =
-                flightSearchExtractService.extractFlightSearch(testCase.prompt(), TEST_BASE_DATE);
+                flightSearchExtractService.extractFlightSearch(testCase.prompt(), TEST_BASE_DATE, modelType());
 
         assertEquals(testCase.expected().departure(), result.departure());
         assertEquals(testCase.expected().arrival(), result.arrival());
@@ -218,11 +239,12 @@ abstract class FlightSearchExtractServiceTest {
 
     private void assertInvalidPrompt(InvalidCase testCase) {
         log.info("LLM provider: {}", providerName());
+        log.info("LLM model type: {}", modelType());
         log.info("LLM extraction invalid prompt: {}", testCase.prompt());
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> flightSearchExtractService.extractFlightSearch(testCase.prompt(), TEST_BASE_DATE)
+                () -> flightSearchExtractService.extractFlightSearch(testCase.prompt(), TEST_BASE_DATE, modelType())
         );
 
         log.info("LLM extraction exception: {}", exception.getMessage());
@@ -253,68 +275,73 @@ abstract class FlightSearchExtractServiceTest {
             Integer maxPrice
     ) {
     }
+
+    protected static ChatClient.Builder unexpectedChatClientBuilder(ModelType modelType) {
+        return ChatClient.builder(new UnexpectedChatModel(modelType));
+    }
+
+    private record UnexpectedChatModel(ModelType modelType) implements ChatModel {
+        @Override
+        public ChatResponse call(Prompt prompt) {
+            throw new AssertionError("Unexpected LLM model selected: " + modelType);
+        }
+    }
+
+    @TestConfiguration
+    static class ChatClientTestConfig {
+        @Bean
+        ChatClient.Builder ollamaPlainChatClientBuilder(
+                @Qualifier("ollamaChatModel") ObjectProvider<ChatModel> chatModelProvider
+        ) {
+            return chatClientBuilder(ModelType.OLLAMA, chatModelProvider);
+        }
+
+        @Bean
+        ChatClient.Builder geminiPlainChatClientBuilder(
+                @Qualifier("googleGenAiChatModel") ObjectProvider<ChatModel> chatModelProvider
+        ) {
+            return chatClientBuilder(ModelType.GEMINI, chatModelProvider);
+        }
+
+        private ChatClient.Builder chatClientBuilder(
+                ModelType modelType,
+                ObjectProvider<ChatModel> chatModelProvider
+        ) {
+            ChatModel chatModel = chatModelProvider.getIfAvailable();
+
+            if (chatModel == null) {
+                return unexpectedChatClientBuilder(modelType);
+            }
+
+            return ChatClient.builder(chatModel);
+        }
+    }
 }
 
-@Tag("llm")
 @Tag("ollama")
-@SpringBootTest(classes = {
-        FlightSearchExtractService.class,
-        PromptConfig.class,
-        PromptResourceLoader.class,
-        FlightSearchExtractServiceOllamaTest.OllamaLlmTestConfig.class
-})
-@EnableAutoConfiguration
-@TestExecutionListeners(
-        // 테스트 클래스 안의 Spring 의존성 주입만 처리
-        listeners = DependencyInjectionTestExecutionListener.class,
-        // REPLACE_DEFAULTS: Spring이 기본으로 등록하는 테스트 리스너들이 제거되고, 위의 리스너만 허용
-        mergeMode = TestExecutionListeners.MergeMode.REPLACE_DEFAULTS
-)
-@EnabledIfEnvironmentVariable(named = "RUN_LLM_TESTS", matches = "true")
+@TestPropertySource(properties = "spring.ai.model.chat=ollama")
 class FlightSearchExtractServiceOllamaTest extends FlightSearchExtractServiceTest {
     @Override
     protected String providerName() {
         return "ollama";
     }
 
-    @TestConfiguration
-    static class OllamaLlmTestConfig {
-        @Bean
-        ChatClient.Builder chatClientBuilder(
-                @Qualifier("ollamaChatModel") ChatModel chatModel
-        ) {
-            return ChatClient.builder(chatModel);
-        }
+    @Override
+    protected ModelType modelType() {
+        return ModelType.OLLAMA;
     }
 }
 
-@Tag("llm")
 @Tag("gemini")
-@SpringBootTest(classes = {
-        FlightSearchExtractService.class,
-        PromptConfig.class,
-        PromptResourceLoader.class,
-        FlightSearchExtractServiceGeminiTest.GeminiLlmTestConfig.class
-})
-@EnableAutoConfiguration
-@TestExecutionListeners(
-        listeners = DependencyInjectionTestExecutionListener.class,
-        mergeMode = TestExecutionListeners.MergeMode.REPLACE_DEFAULTS
-)
-@EnabledIfEnvironmentVariable(named = "RUN_GEMINI_LLM_TESTS", matches = "true")
+@TestPropertySource(properties = "spring.ai.model.chat=google-genai")
 class FlightSearchExtractServiceGeminiTest extends FlightSearchExtractServiceTest {
     @Override
     protected String providerName() {
         return "gemini";
     }
 
-    @TestConfiguration
-    static class GeminiLlmTestConfig {
-        @Bean
-        ChatClient.Builder chatClientBuilder(
-                @Qualifier("googleGenAiChatModel") ChatModel chatModel
-        ) {
-            return ChatClient.builder(chatModel);
-        }
+    @Override
+    protected ModelType modelType() {
+        return ModelType.GEMINI;
     }
 }
