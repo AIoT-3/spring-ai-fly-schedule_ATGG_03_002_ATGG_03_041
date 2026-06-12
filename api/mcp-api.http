@@ -14,3 +14,5 @@ GET http://localhost:8080/api/mcp/airlines/id?airlineName=아시아나항공
 ### 항공편 조회
 GET http://localhost:8080/api/mcp/flight/search?depAirportId=NAARKJJ&arrAirportId=NAARKPC&departmentDate=20260610
 
+
+

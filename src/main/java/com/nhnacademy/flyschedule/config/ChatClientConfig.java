@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Primary;
 public class ChatClientConfig {
     @Primary
     @Bean
-    public ChatClient.Builder ollamaChatClientBuilder(
+    public ChatClient.Builder ollamaAgentChatClientBuilder(
             @Qualifier("ollamaChatModel") ChatModel ollamaChatModel,
             AirportInfoTool airportInfoTool,
             AirlineInfoTool airlineInfoTool,
@@ -28,7 +28,7 @@ public class ChatClientConfig {
     }
 
     @Bean
-    public ChatClient.Builder geminiChatClientBuilder(
+    public ChatClient.Builder geminiAgentChatClientBuilder(
             @Qualifier("googleGenAiChatModel") ChatModel geminiChatModel,
             AirportInfoTool airportInfoTool,
             AirlineInfoTool airlineInfoTool,
@@ -37,6 +37,22 @@ public class ChatClientConfig {
         return ChatClient.builder(geminiChatModel)
                 .defaultAdvisors(new SimpleLoggerAdvisor())
                 .defaultTools(airportInfoTool,  airlineInfoTool, flightSearchTool);
+    }
+
+    @Bean
+    public ChatClient.Builder ollamaPlainChatClientBuilder(
+            @Qualifier("ollamaChatModel") ChatModel ollamaChatModel
+    ) {
+        return ChatClient.builder(ollamaChatModel)
+                .defaultAdvisors(new SimpleLoggerAdvisor());
+    }
+
+    @Bean
+    public ChatClient.Builder geminiPlainChatClientBuilder(
+            @Qualifier("googleGenAiChatModel") ChatModel geminiChatModel
+    ) {
+        return ChatClient.builder(geminiChatModel)
+                .defaultAdvisors(new SimpleLoggerAdvisor());
     }
 
 }
