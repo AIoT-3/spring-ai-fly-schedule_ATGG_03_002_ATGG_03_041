@@ -1,0 +1,35 @@
+### 자연어 항공편 조회 - 기본
+POST http://localhost:8080/api/flights/natural-language
+Content-Type: application/json
+
+{
+  "message": "내일 광주에서 제주로 가는 항공편 찾아 줘",
+  "modelType": "gemini"
+}
+
+### 자연어 항공편 조회 - 시간 조건
+POST http://localhost:8080/api/flights/natural-language
+Content-Type: application/json
+
+{
+  "message": "내일 광주에서 제주 가는 항공편 중 오후 1시 이후로 찾아줘",
+  "modelType": "gemini"
+}
+
+### 자연어 항공편 조회 - 가격 조건
+POST http://localhost:8080/api/flights/natural-language
+Content-Type: application/json
+
+{
+  "message": "내일 광주에서 제주 가는 항공편 중 5만원 이하로 찾아줘",
+  "modelType": "gemini"
+}
+
+### 자연어 항공편 조회 - 시간/가격 복합 조건
+POST http://localhost:8080/api/flights/natural-language
+Content-Type: application/json
+
+{
+  "message": "내일 광주에서 제주 가는 항공편 중 오후 1시 이후 오후 6시 이전 5만원 이하로 찾아줘",
+  "modelType": "gemini"
+}
