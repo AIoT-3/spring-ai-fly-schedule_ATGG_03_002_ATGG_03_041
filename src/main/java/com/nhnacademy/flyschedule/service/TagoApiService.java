@@ -31,7 +31,7 @@ public class TagoApiService {
     public List<FlightInfoResponse> getFlightInfoList(FlightInfoRequest request) {
         return requestApi(
                 "/GetFlightOpratInfoList",
-                request.toQueryParams(apiProperties.getServiceKey()),
+                request.toQueryParams(apiProperties.serviceKey()),
                 new ParameterizedTypeReference<TagoApiResponseWrapper<FlightInfoResponse>>() {}
         );
     }
@@ -77,7 +77,7 @@ public class TagoApiService {
     }
 
     private URI buildUri(String endpoint, MultiValueMap<String, String> queryParams) {
-        return UriComponentsBuilder.fromUriString(apiProperties.getUrl())
+        return UriComponentsBuilder.fromUriString(apiProperties.url())
                 .path(endpoint)
                 .queryParams(queryParams)
                 .build()
@@ -87,7 +87,7 @@ public class TagoApiService {
 
     private MultiValueMap<String, String> defaultQueryParams() {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("serviceKey", apiProperties.getServiceKey());
+        params.add("serviceKey", apiProperties.serviceKey());
         params.add("_type", "json");
         return params;
     }
