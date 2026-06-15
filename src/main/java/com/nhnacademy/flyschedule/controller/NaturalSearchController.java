@@ -2,7 +2,7 @@ package com.nhnacademy.flyschedule.controller;
 
 import com.nhnacademy.flyschedule.dto.request.NaturalLanguageFlightSearchRequest;
 import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
-import com.nhnacademy.flyschedule.service.FlightSearchCoordinator;
+import com.nhnacademy.flyschedule.service.ai.FlightSearchCoordinator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
