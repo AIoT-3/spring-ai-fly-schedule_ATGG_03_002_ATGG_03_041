@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class FlightSearchOrchestrator {
+public class FlightSearchCoordinator {
     private static final int DEFAULT_LIMIT_PER_AIRLINE = 3;
 
     private final FlightSearchExtractService flightSearchExtractService;

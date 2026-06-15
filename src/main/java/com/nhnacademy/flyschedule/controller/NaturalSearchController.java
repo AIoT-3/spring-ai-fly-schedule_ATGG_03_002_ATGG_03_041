@@ -2,7 +2,7 @@ package com.nhnacademy.flyschedule.controller;
 
 import com.nhnacademy.flyschedule.dto.request.NaturalLanguageFlightSearchRequest;
 import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
-import com.nhnacademy.flyschedule.service.FlightSearchOrchestrator;
+import com.nhnacademy.flyschedule.service.FlightSearchCoordinator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api/llm")
 public class NaturalSearchController {
-    private final FlightSearchOrchestrator flightSearchOrchestrator;
+    private final FlightSearchCoordinator flightSearchCoordinator;
 
     @PostMapping("/search")
     public ResponseEntity<Map<String, List<FlightInfoResponse>>> searchByNaturalLanguage(
@@ -29,7 +29,7 @@ public class NaturalSearchController {
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(flightSearchOrchestrator.search(
+                .body(flightSearchCoordinator.search(
                         request.message(),
                         request.modelType()
                 ));
