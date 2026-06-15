@@ -1,4 +1,4 @@
-package com.nhnacademy.flyschedule.service;
+package com.nhnacademy.flyschedule.service.ai;
 
 import com.nhnacademy.flyschedule.dto.FlightSearchExtractResult;
 import com.nhnacademy.flyschedule.dto.ModelType;
@@ -6,7 +6,6 @@ import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
 import com.nhnacademy.flyschedule.service.agent.FlightSearchAgent;
 import com.nhnacademy.flyschedule.service.agent.PriceFilterAgent;
 import com.nhnacademy.flyschedule.service.agent.TimeFilterAgent;
-import com.nhnacademy.flyschedule.service.ai.FlightSearchExtractService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

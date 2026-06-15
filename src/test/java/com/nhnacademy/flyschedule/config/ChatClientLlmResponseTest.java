@@ -19,8 +19,8 @@ class ChatClientLlmResponseTest {
 
 
     ChatClientLlmResponseTest(
-            @Qualifier("ollamaChatClientBuilder") ChatClient.Builder ollamachatClientBuilder,
-            @Qualifier("geminiChatClientBuilder") ChatClient.Builder geminiChatClientBuilder
+            @Qualifier("ollamaAgentChatClientBuilder") ChatClient.Builder ollamachatClientBuilder,
+            @Qualifier("geminiAgentChatClientBuilder") ChatClient.Builder geminiChatClientBuilder
     ) {
         this.ollamaChatClient = ollamachatClientBuilder.build();
         this.geminiChatClient = geminiChatClientBuilder.build();
