@@ -98,8 +98,8 @@ public class FlightSearchExtractService {
                 normalizeText(result.departure()),
                 normalizeText(result.arrival()),
                 normalizeText(result.date()),
-                normalizeText(result.afterTime()),
-                normalizeText(result.beforeTime()),
+                normalizeTime(result.afterTime()),
+                normalizeTime(result.beforeTime()),
                 priceRange.minPrice(),
                 priceRange.maxPrice()
         );
@@ -142,7 +142,17 @@ public class FlightSearchExtractService {
     private record PriceRange(
             Integer minPrice,
             Integer maxPrice
-    ) {
+    ) {}
+
+    private String normalizeTime(String time) {
+        String normalizedTime = normalizeText(time);
+        if(normalizedTime == null ||
+                normalizedTime.equals("00:00") ||
+                normalizedTime.equals("23:59")) {
+            normalizedTime = null;
+        }
+
+        return normalizedTime;
     }
 
     private void validate(FlightSearchExtractResult result) {
