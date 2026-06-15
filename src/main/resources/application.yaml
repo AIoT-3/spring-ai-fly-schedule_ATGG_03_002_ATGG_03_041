@@ -18,9 +18,9 @@ spring:
         api-key: ${GEMINI_API_KEY}        # 환경 변수
         chat:
           options:
-            model: gemma-4-31b-it       # Gemini 2.5 Flash 모델
+            model: gemini-2.5-flash       # Gemini 2.5 Flash 모델
             temperature: 0.0              # 결정적 응답
-            max-output-tokens: 1024        # 최대 출력 토큰 수
+            max-output-tokens: 2048        # 최대 출력 토큰 수
             top-p: 0.9                    # Nucleus sampling
             top-k: 40                     # 상위 K 후보 고려
 logging:
