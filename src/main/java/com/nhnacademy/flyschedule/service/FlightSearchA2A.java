@@ -11,10 +11,12 @@ import java.util.Map;
 
 @Service
 public class FlightSearchA2A {
-    private ChatClient chatClient;
+    private final ChatClient chatClient;
 
-    public FlightSearchA2A(@Qualifier("geminiAgentChatClientBuilder") ChatClient.Builder geminiChatClientBuilder) {
-        chatClient = geminiChatClientBuilder.build();
+    public FlightSearchA2A(
+            @Qualifier("geminiAgentChatClientBuilder") ChatClient.Builder geminiChatClientBuilder
+    ) {
+        this.chatClient = geminiChatClientBuilder.build();
     }
 
     public Map<String, List<FlightInfoResponse>> search(String prompt) {
