@@ -4,9 +4,9 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.nhnacademy.flyschedule.cache.FlightInfoCacheKey;
 import com.nhnacademy.flyschedule.dto.request.FlightInfoRequest;
-import com.nhnacademy.flyschedule.dto.resposne.AirlineInfoResponse;
-import com.nhnacademy.flyschedule.dto.resposne.AirportInfoResponse;
-import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.AirlineInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.AirportInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.FlightInfoResponse;
 import com.nhnacademy.flyschedule.repository.TagoApiRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,10 +18,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TagoApiServiceTest {

@@ -3,7 +3,7 @@ package com.nhnacademy.flyschedule.config;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.nhnacademy.flyschedule.cache.FlightInfoCacheKey;
-import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.FlightInfoResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

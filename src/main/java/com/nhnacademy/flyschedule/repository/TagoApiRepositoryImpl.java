@@ -2,10 +2,10 @@ package com.nhnacademy.flyschedule.repository;
 
 import com.nhnacademy.flyschedule.config.DataGoKrApiProperties;
 import com.nhnacademy.flyschedule.dto.request.FlightInfoRequest;
-import com.nhnacademy.flyschedule.dto.resposne.AirlineInfoResponse;
-import com.nhnacademy.flyschedule.dto.resposne.AirportInfoResponse;
-import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
-import com.nhnacademy.flyschedule.dto.resposne.TagoApiResponseWrapper;
+import com.nhnacademy.flyschedule.dto.response.AirlineInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.AirportInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.FlightInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.TagoApiResponseWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
