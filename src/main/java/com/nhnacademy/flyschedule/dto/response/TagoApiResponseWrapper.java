@@ -1,4 +1,4 @@
-package com.nhnacademy.flyschedule.dto.resposne;
+package com.nhnacademy.flyschedule.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

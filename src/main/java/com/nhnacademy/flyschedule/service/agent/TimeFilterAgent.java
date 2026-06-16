@@ -1,6 +1,6 @@
 package com.nhnacademy.flyschedule.service.agent;
 
-import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.FlightInfoResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;

@@ -2,7 +2,7 @@ package com.nhnacademy.flyschedule.service.agent;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.flyschedule.dto.request.FlightInfoRequest;
-import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.FlightInfoResponse;
 import com.nhnacademy.flyschedule.service.TagoApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

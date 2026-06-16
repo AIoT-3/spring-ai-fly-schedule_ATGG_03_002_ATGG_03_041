@@ -1,6 +1,6 @@
 package com.nhnacademy.flyschedule.mcp;
 
-import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.FlightInfoResponse;
 import com.nhnacademy.flyschedule.service.ai.FlightSearchOrchestrator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,9 @@ public class FlightSearchTool {
                     날짜는 '내일', '모레', '2026-06-15' 같은 표현을 전달할 수 있습니다.
                     시간 조건은 HH:mm 형식으로 전달합니다. 예: 13:00, 18:30
                     가격 조건은 원 단위 정수로 전달합니다. 예: 50000
-                    """
+                    """,
+            returnDirect = true
+
     )
     public Map<String, List<FlightInfoResponse>> searchFlightsWithFilters(
             @ToolParam(description = "출발 공항 이름. 예: 광주, 김포, 제주") String departure,

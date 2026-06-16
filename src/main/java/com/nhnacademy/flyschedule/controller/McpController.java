@@ -1,8 +1,8 @@
 package com.nhnacademy.flyschedule.controller;
 
-import com.nhnacademy.flyschedule.dto.resposne.AirlineInfoResponse;
-import com.nhnacademy.flyschedule.dto.resposne.AirportInfoResponse;
-import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.AirlineInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.AirportInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.FlightInfoResponse;
 import com.nhnacademy.flyschedule.mcp.AirlineInfoTool;
 import com.nhnacademy.flyschedule.mcp.AirportInfoTool;
 import com.nhnacademy.flyschedule.mcp.FlightSearchTool;

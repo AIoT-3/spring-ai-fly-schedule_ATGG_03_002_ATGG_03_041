@@ -33,3 +33,12 @@ Content-Type: application/json
   "message": "내일 광주에서 제주 가는 항공편 중 오후 1시 이후 오후 6시 이전 5만원 이하로 찾아줘",
   "modelType": "gemini"
 }
+
+### 자연어 항공편 조회
+POST http://localhost:8080/api/llm/search?type=a2a
+Content-Type: application/json
+
+{
+  "message": "내일 광주에서 제주로 가는 항공편 찾아 줘",
+  "modelType": "ollama"
+}

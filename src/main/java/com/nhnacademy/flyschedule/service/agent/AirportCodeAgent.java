@@ -1,6 +1,6 @@
 package com.nhnacademy.flyschedule.service.agent;
 
-import com.nhnacademy.flyschedule.dto.resposne.AirportInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.AirportInfoResponse;
 import com.nhnacademy.flyschedule.service.TagoApiService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

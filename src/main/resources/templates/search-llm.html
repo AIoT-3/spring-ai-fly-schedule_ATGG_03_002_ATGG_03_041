@@ -13,7 +13,7 @@
 
         .response-card {
             margin-top: 1rem;
-            max-height: 250px;
+            max-height: 450px;
             overflow-y: auto;
             border: 1px solid #e6e8e9;
             border-radius: 4px;
@@ -69,34 +69,46 @@
                             <div class="mb-3">
                                 <label class="form-label">검색하고 싶은 내용을 자연어로 입력하세요</label>
                                 <textarea class="form-control" id="messageInput" rows="3"
-                                          placeholder="예: 2026년3월25일 광주에서 제주로 가는 10시 이후 항공편 조회 해줘"></textarea>
+                                          placeholder="예: 2026년 3월 25일 광주에서 제주로 가는 10시 이후 항공편 조회 해줘"></textarea>
                             </div>
-                            <div id="flightResult" class="response-card" style="display:none;"></div>
-                            <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
-                                <div class="btn-group" role="group">
-                                    <input type="radio" class="btn-check" name="llmModel" id="modelGemini" value="gemini" checked>
-                                    <label class="btn btn-outline-primary" for="modelGemini">
-                                        <i class="ti ti-brand-google me-1"></i>Gemini
-                                    </label>
 
-                                    <input type="radio" class="btn-check" name="llmModel" id="modelOllama" value="ollama">
-                                    <label class="btn btn-outline-warning" for="modelOllama">
-                                        <i class="ti ti-server me-1"></i>Ollama
-                                    </label>
+                            <div id="flightResult" class="response-card" style="display:none;"></div>
+
+                            <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap mt-3">
+                                <div class="d-flex gap-3 align-items-center">
+                                    <div class="btn-group" role="group">
+                                        <input type="radio" class="btn-check" name="llmModel" id="modelGemini" value="gemini" checked>
+                                        <label class="btn btn-outline-primary" for="modelGemini">
+                                            <i class="ti ti-brand-google me-1"></i>Gemini
+                                        </label>
+
+                                        <input type="radio" class="btn-check" name="llmModel" id="modelOllama" value="ollama">
+                                        <label class="btn btn-outline-warning" for="modelOllama">
+                                            <i class="ti ti-server me-1"></i>Ollama
+                                        </label>
+                                    </div>
+
+                                    <div class="btn-group" role="group">
+                                        <input type="radio" class="btn-check" name="coordinatorType" id="coordDefault" value="default" checked>
+                                        <label class="btn btn-outline-secondary" for="coordDefault">
+                                            <i class="ti ti-braces me-1"></i>Coordinator
+                                        </label>
+
+                                        <input type="radio" class="btn-check" name="coordinatorType" id="coordA2A" value="a2a">
+                                        <label class="btn btn-outline-success" for="coordA2A">
+                                            <i class="ti ti-robot me-1"></i>A2A
+                                        </label>
+                                    </div>
                                 </div>
 
-                                <button class="btn btn-primary btn-sm" onclick="searchFlightSchedule()">
-                                    <i class="ti ti-git-branch me-1"></i>
+                                <button class="btn btn-primary" onclick="searchFlightSchedule()">
+                                    <i class="ti ti-search me-1"></i>
                                     검색
                                 </button>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
-
-
             </div>
         </div>
     </div>
@@ -133,6 +145,7 @@
     async function searchFlightSchedule() {
         const message = document.getElementById('messageInput').value.trim();
         const modelType = document.querySelector('input[name="llmModel"]:checked').value;
+        const coordinatorType = document.querySelector('input[name="coordinatorType"]:checked').value;
 
         if (!message) {
             alert('검색 내용을 입력하세요.');
@@ -141,7 +154,7 @@
 
         await callAPI(
             'flight',
-            `${API_BASE}/search`,
+            `${API_BASE}/search?type=${coordinatorType}`,
             formatFlightResults,
             {
                 method: 'POST',
@@ -161,7 +174,7 @@
         const airlines = Object.keys(flights);
 
         if (airlines.length === 0) {
-            return `<div class="alert alert-warning">검색 결과 없음</div>`;
+            return `<div class="alert alert-warning mb-0">검색 결과가 존재하지 않거나 조건에 맞는 항공편이 없습니다.</div>`;
         }
 
         let html = '';
@@ -182,13 +195,15 @@
 
                 const price = flight.economyCharge > 0
                     ? flight.economyCharge.toLocaleString() + "원"
-                    : "가격 없음";
+                    : "가격 정보 없음";
 
                 html += `
-                <div class="border rounded p-2 mb-2">
-                    <div><b>${dep} → ${arr}</b></div>
-                    <div>${flight.vihicleId}</div>
-                    <div>${price}</div>
+                <div class="border rounded p-2 mb-2 bg-white shadow-sm">
+                    <div class="d-flex justify-content-between">
+                        <span><b>${dep} → ${arr}</b></span>
+                        <span class="text-muted small">${flight.vihicleId}</span>
+                    </div>
+                    <div class="text-primary fw-bold mt-1">${price}</div>
                 </div>
             `;
             });
@@ -197,7 +212,6 @@
         return html;
     }
 
-
     function showLoading() {
         document.getElementById('loadingOverlay').classList.add('active');
     }
@@ -205,8 +219,6 @@
     function hideLoading() {
         document.getElementById('loadingOverlay').classList.remove('active');
     }
-
-
 </script>
 </body>
 </html>
