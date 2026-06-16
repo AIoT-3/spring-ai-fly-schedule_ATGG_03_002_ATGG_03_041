@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,7 +17,7 @@ public class A2AController {
     private final FlightSearchA2A flightSearchA2A;
 
     @GetMapping("/test")
-    public ResponseEntity<List<FlightInfoResponse>> searchAirline(@RequestParam String text) {
+    public ResponseEntity<Map<String, List<FlightInfoResponse>>> searchAirline(@RequestParam String text) {
         return ResponseEntity
                 .ok(flightSearchA2A.search(text));
     }

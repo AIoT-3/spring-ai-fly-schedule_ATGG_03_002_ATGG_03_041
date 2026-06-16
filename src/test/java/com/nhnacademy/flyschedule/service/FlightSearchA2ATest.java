@@ -7,8 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Map;
 
 @Slf4j
 @SpringBootTest
@@ -19,10 +18,13 @@ class FlightSearchA2ATest {
 
     @Test
     void TestFlightSearchA2A() {
-        List<FlightInfoResponse> search = flightSearchA2A.search("Tool 을 활용해서 내일 10시이후 광주에서 제주도 가는 비행기표 조회해줘 ");
+        Map<String, List<FlightInfoResponse>> search =
+                flightSearchA2A.search("Tool 을 활용해서 내일 10시이후 광주에서 제주도 가는 비행기표 조회해줘 ");
 
-        for (FlightInfoResponse flightInfoResponse : search) {
-            log.info(flightInfoResponse.toString());
-        }
+        search.forEach((airlineName, flights) ->
+                flights.forEach(flightInfoResponse ->
+                        log.info("{}: {}", airlineName, flightInfoResponse)
+                )
+        );
     }
 }

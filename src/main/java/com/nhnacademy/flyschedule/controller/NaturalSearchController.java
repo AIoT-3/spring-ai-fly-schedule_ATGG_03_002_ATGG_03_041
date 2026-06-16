@@ -1,5 +1,6 @@
 package com.nhnacademy.flyschedule.controller;
 
+import com.nhnacademy.flyschedule.dto.ModelType;
 import com.nhnacademy.flyschedule.dto.request.NaturalLanguageFlightSearchRequest;
 import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
 import com.nhnacademy.flyschedule.service.ai.FlightSearchCoordinator;
@@ -31,7 +32,7 @@ public class NaturalSearchController {
                 .status(HttpStatus.OK)
                 .body(flightSearchCoordinator.search(
                         request.message(),
-                        request.modelType()
+                        ModelType.defaultIfNull(request.modelType())
                 ));
     }
 }

@@ -83,17 +83,33 @@ public class McpController {
      * @param departure 출발 공항 이름
      * @param arrival   도착 공항 이름
      * @param date      날짜
+     * @param afterTime 출발 시간 하한
+     * @param beforeTime 출발 시간 상한
+     * @param minPrice 최소 가격
+     * @param maxPrice 최대 가격
      * @return 항공사별로 그룹핑된 항공편
      */
     @GetMapping("/flight/search")
     public ResponseEntity<Map<String, List<FlightInfoResponse>>> getFlightSearch(
             @RequestParam String departure,
             @RequestParam String arrival,
-            @RequestParam String date
+            @RequestParam String date,
+            @RequestParam(required = false) String afterTime,
+            @RequestParam(required = false) String beforeTime,
+            @RequestParam(required = false) Integer minPrice,
+            @RequestParam(required = false) Integer maxPrice
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(flightSearchTool.searchFlights(departure, arrival, date, 3));
+                .body(flightSearchTool.searchFlightsWithFilters(
+                        departure,
+                        arrival,
+                        date,
+                        afterTime,
+                        beforeTime,
+                        minPrice,
+                        maxPrice
+                ));
     }
 
     /**
@@ -114,7 +130,15 @@ public class McpController {
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(flightSearchTool.searchFlightsWithTimeFilter(departure, arrival, date, afterTime, 3));
+                .body(flightSearchTool.searchFlightsWithFilters(
+                        departure,
+                        arrival,
+                        date,
+                        afterTime,
+                        null,
+                        null,
+                        null
+                ));
     }
 
     /**
@@ -132,12 +156,20 @@ public class McpController {
             @RequestParam String departure,
             @RequestParam String arrival,
             @RequestParam String date,
-            @RequestParam(required = false) String minPrice,
-            @RequestParam(required = false) String maxPrice
+            @RequestParam(required = false) Integer minPrice,
+            @RequestParam(required = false) Integer maxPrice
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(flightSearchTool.searchFlightsWithPriceFilter(departure, arrival, date, minPrice, maxPrice, 3));
+                .body(flightSearchTool.searchFlightsWithFilters(
+                        departure,
+                        arrival,
+                        date,
+                        null,
+                        null,
+                        minPrice,
+                        maxPrice
+                ));
     }
 
 }
