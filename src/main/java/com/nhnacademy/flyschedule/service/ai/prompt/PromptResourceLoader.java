@@ -24,6 +24,8 @@ public class PromptResourceLoader {
         String resourcePath = path.startsWith(CLASSPATH_PREFIX) ? path : CLASSPATH_PREFIX + path;
         Resource resource = resourceLoader.getResource(resourcePath);
 
+        // PathMatchingResourcePatternResolver
+
         try {
             return resource.getContentAsString(StandardCharsets.UTF_8);
         } catch (IOException e) {

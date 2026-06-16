@@ -1,130 +1,74 @@
 package com.nhnacademy.flyschedule.service.ai;
 
+import com.nhnacademy.flyschedule.dto.FlightSearchCommand;
 import com.nhnacademy.flyschedule.dto.FlightSearchExtractResult;
 import com.nhnacademy.flyschedule.dto.ModelType;
 import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
-import com.nhnacademy.flyschedule.service.agent.FlightSearchAgent;
-import com.nhnacademy.flyschedule.service.agent.PriceFilterAgent;
-import com.nhnacademy.flyschedule.service.agent.TimeFilterAgent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalTime;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FlightSearchCoordinator {
-    private static final int DEFAULT_LIMIT_PER_AIRLINE = 3;
-
     private final FlightSearchExtractService flightSearchExtractService;
-    private final FlightSearchAgent flightSearchAgent;
-    private final TimeFilterAgent timeFilterAgent;
-    private final PriceFilterAgent priceFilterAgent;
+    private final FlightSearchExecutionService flightSearchExecutionService;
 
     public Map<String, List<FlightInfoResponse>> search(
             String message,
             ModelType modelType
     ) {
+        log.info("Coordinator flight search started: modelType={}, messageLength={}",
+                modelType,
+                message == null ? 0 : message.length());
+
         validateText(message, "항공편 검색 문장을 입력해주세요.");
-        modelType = ModelType.defaultIfNull(modelType);
+        ModelType resolvedModelType = ModelType.defaultIfNull(modelType);
+        log.info("Coordinator model type resolved: requested={}, resolved={}", modelType, resolvedModelType);
 
         // 1. LLM으로 파라미터 추출
+        log.info("Coordinator extracting flight search condition");
         FlightSearchExtractResult condition =
                 flightSearchExtractService.extractFlightSearch(
                         message,
-                        modelType
+                        resolvedModelType
                 );
+        log.info("Coordinator extraction completed: departure={}, arrival={}, date={}, afterTime={}, beforeTime={}, minPrice={}, maxPrice={}",
+                condition.departure(),
+                condition.arrival(),
+                condition.date(),
+                condition.afterTime(),
+                condition.beforeTime(),
+                condition.minPrice(),
+                condition.maxPrice());
 
-        // 2. 항공편 검색
-        Map<String, List<FlightInfoResponse>> flightsByAirline =
-                flightSearchAgent.search(
-                        condition.departure(),
-                        condition.arrival(),
-                        condition.date()
-                );
+        // 2. 공통 항공편 검색 흐름 호출
+        log.info("Coordinator converting extraction result to command");
+        FlightSearchCommand command = FlightSearchCommand.fromExtractResult(condition);
 
-        // 3. 필터링 후 반환
-        return applyFilters(flightsByAirline, condition, normalizeLimit(DEFAULT_LIMIT_PER_AIRLINE));
-    }
+        log.info("Coordinator executing common flight search pipeline");
+        Map<String, List<FlightInfoResponse>> result = flightSearchExecutionService.search(command);
+        log.info("Coordinator flight search completed: airlineCount={}, flightCount={}",
+                result.size(),
+                countFlights(result));
 
-    private Map<String, List<FlightInfoResponse>> applyFilters(
-            Map<String, List<FlightInfoResponse>> flightsByAirline,
-            FlightSearchExtractResult condition,
-            int limitPerAirline
-    ) {
-        if (flightsByAirline == null || flightsByAirline.isEmpty()) {
-            return Map.of();
-        }
-
-        return flightsByAirline.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> applyFilters(entry.getValue(), condition, limitPerAirline),
-                        (left, right) -> left,
-                        LinkedHashMap::new
-                ));
-    }
-
-    private List<FlightInfoResponse> applyFilters(
-            List<FlightInfoResponse> flights,
-            FlightSearchExtractResult condition,
-            int limitPerAirline
-    ) {
-        List<FlightInfoResponse> filtered = flights == null ? List.of() : flights;
-
-        if (condition.afterTime() != null) {
-            filtered = timeFilterAgent.filterAfterTime(
-                    filtered,
-                    LocalTime.parse(condition.afterTime())
-            );
-        }
-
-        if (condition.beforeTime() != null) {
-            filtered = timeFilterAgent.filterBeforeTime(
-                    filtered,
-                    LocalTime.parse(condition.beforeTime())
-            );
-        }
-
-        if (condition.minPrice() != null || condition.maxPrice() != null) {
-            filtered = priceFilterAgent.filterByPriceRange(
-                    filtered,
-                    condition.minPrice(),
-                    condition.maxPrice()
-            );
-        }
-
-        return limitFlights(filtered, limitPerAirline);
-    }
-
-    private List<FlightInfoResponse> limitFlights(
-            List<FlightInfoResponse> flights,
-            int limit
-    ) {
-        if (flights == null || flights.isEmpty()) {
-            return List.of();
-        }
-
-        return flights.stream()
-                .limit(limit)
-                .toList();
-    }
-
-    private int normalizeLimit(Integer limitPerAirline) {
-        if (limitPerAirline == null || limitPerAirline <= 0) {
-            return DEFAULT_LIMIT_PER_AIRLINE;
-        }
-
-        return limitPerAirline;
+        return result;
     }
 
     private void validateText(String text, String exceptionMessage) {
         if (text == null || text.isBlank()) {
             throw new IllegalArgumentException(exceptionMessage);
         }
+    }
+
+    private int countFlights(Map<String, List<FlightInfoResponse>> flightsByAirline) {
+        return flightsByAirline.values()
+                .stream()
+                .mapToInt(List::size)
+                .sum();
     }
 }
