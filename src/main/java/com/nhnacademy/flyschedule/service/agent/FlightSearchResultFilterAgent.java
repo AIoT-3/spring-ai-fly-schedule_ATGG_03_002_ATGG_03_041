@@ -1,7 +1,7 @@
 package com.nhnacademy.flyschedule.service.agent;
 
 import com.nhnacademy.flyschedule.dto.FlightSearchCriteria;
-import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.FlightInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

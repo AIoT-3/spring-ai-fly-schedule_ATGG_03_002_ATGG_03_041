@@ -1,7 +1,7 @@
 package com.nhnacademy.flyschedule.controller;
 
-import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
-import com.nhnacademy.flyschedule.service.FlightSearchA2A;
+import com.nhnacademy.flyschedule.dto.response.FlightInfoResponse;
+import com.nhnacademy.flyschedule.service.ai.FlightSearchA2A;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

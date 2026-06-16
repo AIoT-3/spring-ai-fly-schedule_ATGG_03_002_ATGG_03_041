@@ -2,7 +2,7 @@ package com.nhnacademy.flyschedule.service.ai;
 
 import com.nhnacademy.flyschedule.dto.FlightSearchCommand;
 import com.nhnacademy.flyschedule.dto.FlightSearchCriteria;
-import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.FlightInfoResponse;
 import com.nhnacademy.flyschedule.service.agent.FlightSearchAgent;
 import com.nhnacademy.flyschedule.service.agent.FlightSearchConditionAgent;
 import com.nhnacademy.flyschedule.service.agent.FlightSearchResultFilterAgent;

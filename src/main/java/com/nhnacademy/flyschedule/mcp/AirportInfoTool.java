@@ -1,6 +1,6 @@
 package com.nhnacademy.flyschedule.mcp;
 
-import com.nhnacademy.flyschedule.dto.resposne.AirportInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.AirportInfoResponse;
 import com.nhnacademy.flyschedule.service.agent.AirportCodeAgent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

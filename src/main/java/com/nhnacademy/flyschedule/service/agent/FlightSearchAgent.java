@@ -2,7 +2,7 @@ package com.nhnacademy.flyschedule.service.agent;
 
 
 import com.nhnacademy.flyschedule.dto.request.FlightInfoRequest;
-import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.FlightInfoResponse;
 import com.nhnacademy.flyschedule.service.TagoApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

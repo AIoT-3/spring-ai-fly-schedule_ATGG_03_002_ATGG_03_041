@@ -72,11 +72,11 @@ abstract class FlightSearchExtractServiceTest {
     @DisplayName("날짜 표현이 있는 요청 - 상대적")
     void extractFlightSearch_valid_relativeDate() {
         assertValidPrompt(new ValidCase(
-                "3일 뒤 김포에서 부산 가는 항공편 조회해줘.",
+                "모레 김포에서 부산 가는 항공편 조회해줘.",
                 new ExpectedResult(
                         "김포",
                         "부산",
-                        "2026-06-13",
+                        "2026-06-12",
                         null,
                         null,
                         null,

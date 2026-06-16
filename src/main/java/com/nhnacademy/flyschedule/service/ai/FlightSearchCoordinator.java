@@ -3,7 +3,7 @@ package com.nhnacademy.flyschedule.service.ai;
 import com.nhnacademy.flyschedule.dto.FlightSearchCommand;
 import com.nhnacademy.flyschedule.dto.FlightSearchExtractResult;
 import com.nhnacademy.flyschedule.dto.ModelType;
-import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
+import com.nhnacademy.flyschedule.dto.response.FlightInfoResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
