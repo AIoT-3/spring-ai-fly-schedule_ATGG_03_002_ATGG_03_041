@@ -1,6 +1,8 @@
 package com.nhnacademy.flyschedule.service;
 
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.nhnacademy.flyschedule.cache.FlightInfoCacheKey;
 import com.nhnacademy.flyschedule.config.DataGoKrApiProperties;
 import com.nhnacademy.flyschedule.dto.request.FlightInfoRequest;
 import com.nhnacademy.flyschedule.dto.resposne.AirlineInfoResponse;
@@ -26,14 +28,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TagoApiService {
     private final DataGoKrApiProperties apiProperties;
+    private final Cache<FlightInfoCacheKey, List<FlightInfoResponse>> flightInfoCache;
     private final RestClient restClient = RestClient.create();
 
     public List<FlightInfoResponse> getFlightInfoList(FlightInfoRequest request) {
-        return requestApi(
+        FlightInfoCacheKey key = new FlightInfoCacheKey(
+                request.depAirportId(),
+                request.arrAirportId(),
+                request.departmentDate()
+        );
+
+        // key가 존재하면 key를 반환, key가 존재하지 않는 경우, api 호출
+        return flightInfoCache.get(key, ignored -> requestApi(
                 "/GetFlightOpratInfoList",
                 request.toQueryParams(apiProperties.serviceKey()),
                 new ParameterizedTypeReference<TagoApiResponseWrapper<FlightInfoResponse>>() {}
-        );
+        ));
     }
 
     public List<AirportInfoResponse> getAirportInfoList() {

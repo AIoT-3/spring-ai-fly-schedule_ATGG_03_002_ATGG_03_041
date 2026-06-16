@@ -7,8 +7,8 @@ import com.nhnacademy.flyschedule.dto.resposne.AirlineInfoResponse;
 import com.nhnacademy.flyschedule.dto.resposne.AirportInfoResponse;
 import com.nhnacademy.flyschedule.dto.resposne.FlightInfoResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -16,9 +16,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+@Tag("integration")
 @Slf4j
 @SpringBootTest
-@EnabledIfEnvironmentVariable(named = "RUN_TAGO_API_TESTS", matches = "true")
 class TagoApiServiceTest {
 
     @Autowired
